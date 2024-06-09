@@ -1,4 +1,5 @@
 import os
+import shlex
 import readline
 import subprocess
 import datetime
@@ -48,36 +49,44 @@ def main():
         try:
 
             weekday = weekdays[weekday_num]
-            input_string = input(
-                f"\033[38;5;12m({current_date} | {weekday})\033[0m > "
-            ).split()
+            input_string = shlex.split(
+                input(f"\033[38;5;12m({current_date} | {weekday})\033[0m > ")
+            )
 
             _, columns = os.popen("stty size", "r").read().split()
 
-            if input_string[0].lower() == "exit":
-                exit()
-            elif input_string[0].lower() == "clear":
-                subprocess.run("clear")
-            else:
-                handle_command(input_string)
+            handle_command(input_string)
 
             print("\033[38;5;237m-\033[0m" * int(columns))
 
         except EOFError:
             break
         except KeyboardInterrupt:
-            break
+            print()
+            continue
+        except FileNotFoundError:
+            error("category file does not exist")
+        except ValueError:
+            error("invalid entry:", "quotation not closed")
 
 
 def handle_command(input_string):
-    if input_string[0] == "date":
+    if input_string[0].lower() == "exit":
+        exit()
+    elif input_string[0].lower() == "clear":
+        subprocess.run("clear")
+    elif input_string[0] == "date":
         input_string.pop(0)
         change_date(input_string)
     elif input_string[0] == "help":
-        print("No")
-    elif input_string[0][0] == "+" or input_string[0][0] == "-":
-        print("test")
-
+        print("lol no")
+    elif input_string[0][0] == "+" or is_number(input_string[0]):
+        if len(input_string) > 4:
+            error("invalid entry:", "too many arguments")
+        elif len(input_string) < 4:
+            error("invalid entry:", "incomplete arguments")
+        else:
+            print(valid_entry(input_string))
     else:
         error("unknown command:", input_string[0])
 
@@ -111,14 +120,113 @@ def change_date(date_string):
     current_date = new_date
     weekday_num = current_date.weekday()
     weekday = weekdays[weekday_num]
-    print(f"Date changed : {new_date} | {weekday}")
+    green(f"Date changed : {new_date} | {weekday}")
 
 
-def error(*error_string):
-    print("\033[38;5;160mERROR:\033[0m", end=" ")
+def valid_entry(input_string):
+
+    global current_date
+    transaction_type = input_string[0][0]
+    amount = input_string[0]
+    account = input_string[1].lower()
+    description = input_string[2]
+    category = input_string[3]
+
+    if transaction_type == "+":
+        transaction_type = "credit"
+        amount = float(amount)
+    else:
+        transaction_type = "debit"
+        amount = float(amount)
+
+    if account in ["cash", "card", "s", "r"]:
+        if account == "s":
+            account = "cash"
+        elif account == "r":
+            account = "card"
+    else:
+        while account not in ["cash", "card", "s", "r"]:
+            if account == "":
+                pass
+            else:
+                red(f"'{account}' is not a valid account")
+            account = input("Is the transaction ca[s]h or ca[r]d? : ").lower()
+        if account == "s":
+            account = "cash"
+        elif account == "r":
+            account = "card"
+        green(f"Account set to '{account}'")
+
+    with open("categories", "r") as file:
+        categories = file.readlines()
+    categories = [cat.rstrip("\n") for cat in categories]
+
+    def create_new_category(category):
+        if input(f"'{category}' category does not exist. Create it? [Y/n] ") in [
+            "y",
+            "Y",
+            "",
+        ]:
+            with open("categories", "a") as file:
+                file.write(f"{category}\n")
+            green(f"New category created : '{category}'")
+            return True
+        else:
+            return False
+
+    if category in categories:
+        pass
+    else:
+        if create_new_category(category):
+            pass
+        else:
+            while True:
+                category = input("Enter a category: ")
+                if category == "":
+                    continue
+                if category in categories:
+                    green(f"Category set to '{category}'")
+                    break
+                elif create_new_category(category):
+                    break
+
+    return [current_date, amount, description, category, account, transaction_type]
+
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
+def error(*error_string, new_line=True):
+    print("\033[38;5;9mERROR:\033[0m", end=" ")
     for statement in error_string:
         print(statement, end=" ")
-    print()
+    if new_line:
+        print()
+    else:
+        print(end="")
+
+
+def green(*update_string, new_line=True):
+    for statement in update_string:
+        print(f"\033[38;5;2m{statement}\033[0m", end=" ")
+    if new_line:
+        print()
+    else:
+        print(end="")
+
+
+def red(*update_string, new_line=True):
+    for statement in update_string:
+        print(f"\033[38;5;9m{statement}\033[0m", end=" ")
+    if new_line:
+        print()
+    else:
+        print(end="")
 
 
 if __name__ == "__main__":
