@@ -63,6 +63,7 @@ def main():
             break
         except KeyboardInterrupt:
             print()
+            print("\033[38;5;237m-\033[0m" * int(columns))
             continue
         except FileNotFoundError:
             error("category file does not exist")
@@ -71,14 +72,14 @@ def main():
 
 
 def handle_command(input_string):
-    if input_string[0].lower() == "exit":
+    if input_string[0].lower() in ["exit", "e"]:
         exit()
-    elif input_string[0].lower() == "clear":
+    elif input_string[0].lower() in ["clear", "c"]:
         subprocess.run("clear")
-    elif input_string[0] == "date":
+    elif input_string[0] in ["date", "d"]:
         input_string.pop(0)
         change_date(input_string)
-    elif input_string[0] == "help":
+    elif input_string[0] in ["help", "h"]:
         print("lol no")
     elif input_string[0][0] == "+" or is_number(input_string[0]):
         if len(input_string) > 4:
@@ -93,29 +94,72 @@ def handle_command(input_string):
 
 def change_date(date_string):
     global today, current_date, dayweeks, weekday_num
+    weekday = weekdays[weekday_num]
+    date_formats = ["%Y-%m-%d", "%m-%d", "%d"]
+    new_date = today
+    # incomplete_date_formats = []
+    # date = ""
 
     if len(date_string) == 0:
         error("no day entered")
         print(f"Current date: {datetime.date.today()}")
         return
+    elif len(date_string) > 2:
+        error("invalid date:", "too many arguements")
+        print(f"Current date: {datetime.date.today()}")
+        return
     else:
-        if date_string[0] == "yesterday":
-            new_date = today - datetime.timedelta(days=1)
-        elif date_string[0] == "today":
-            new_date = today
-        elif date_string[0] == "tomorrow":
-            new_date = today + datetime.timedelta(days=1)
-        elif date_string[0] in dayweeks.keys():
-            day = dayweeks[date_string[0]]
+        date = date_string[0]
+
+    if is_prefix(date, "last"):
+        if len(date_string) == 1:
+            error("invalid date:", "no weekday provided")
+            return
+        else:
+            date = date_string[1]
+        if date in dayweeks.keys():
+            day = dayweeks[date]
             days_since = (today.weekday() - day) % 7
             if days_since == 0:
                 days_since = 7
             new_date = today - datetime.timedelta(days=days_since)
         else:
-            error("unknown date")
-            weekday = weekdays[weekday_num]
-            print(f"Current date: {current_date} | {weekday}")
+            error("invalid date:", f"'{date}' is not a valid weekday")
+    elif is_prefix(date, "next"):
+        if len(date_string) == 1:
+            error("invalid date:", "no weekday provided")
             return
+        else:
+            date = date_string[1]
+        if date in dayweeks.keys():
+            day = dayweeks[date]
+            days_till = (day - today.weekday()) % 7
+            if days_till == 0:
+                days_till = 7
+            new_date = today + datetime.timedelta(days=days_till)
+        else:
+            error("invalid date:", f"'{date}' is not a valid weekday")
+    elif is_prefix(date, "yesterday"):
+        new_date = today - datetime.timedelta(days=1)
+    elif is_prefix(date, "today"):
+        new_date = today
+    elif is_prefix(date, "tomorrow") or date == "m":
+        new_date = today + datetime.timedelta(days=1)
+    elif is_date(date, date_formats):
+        if is_date(date, ["%Y-%m-%d"]):
+            new_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+        elif is_date(date, ["%m-%d"]):
+            new_date = datetime.datetime.strptime(
+                f"{today.year}-{date}", "%Y-%m-%d"
+            ).date()
+        elif is_date(date, ["%d"]):
+            new_date = datetime.datetime.strptime(
+                f"{today.year}-{today.month}-{date}", "%Y-%m-%d"
+            ).date()
+    else:
+        error("unknown date")
+        print(f"Current date: {current_date} | {weekday}")
+        return
 
     current_date = new_date
     weekday_num = current_date.weekday()
@@ -137,7 +181,7 @@ def valid_entry(input_string):
         amount = float(amount)
     else:
         transaction_type = "debit"
-        amount = float(amount)
+        amount = float("-" + amount)
 
     if account in ["cash", "card", "s", "r"]:
         if account == "s":
@@ -199,6 +243,20 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+
+def is_date(string, date_formats):
+    for date_format in date_formats:
+        try:
+            datetime.datetime.strptime(string, date_format)
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+def is_prefix(prefix, full_string):
+    return full_string.startswith(prefix)
 
 
 def error(*error_string, new_line=True):
