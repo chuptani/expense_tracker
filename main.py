@@ -4,10 +4,13 @@ import readline
 import subprocess
 import datetime
 
+from commands import Command, CommandRegistry
 from utils import error, green, red, is_number, is_date, is_prefix
 
+from basic_commands import basic_local_register
 
-class cli:
+
+class Cli:
 
     def __init__(self):
         self.weekdays = {
@@ -35,8 +38,12 @@ class cli:
         self.current_date = self.today
         self.weekday_num = self.current_date.weekday()
 
+        self.registry = CommandRegistry()
+        self.registry.register_register(basic_local_register)
+
     def loop(self):
 
+        # intro
         # subprocess.run("clear")
         print("Welcome to Expense Tracker!")
         print()
@@ -58,7 +65,9 @@ class cli:
 
                 _, columns = os.popen("stty size", "r").read().split()
 
-                self.handle_command(input_string)
+                result = self.registry.execute(input_string)
+                if result:
+                    print(result, end="")
 
                 print("\033[38;5;237m-\033[0m" * int(columns))
 
@@ -246,5 +255,5 @@ class cli:
 
 
 if __name__ == "__main__":
-    cli = cli()  # type: ignore
+    cli = Cli()  # type: ignore
     cli.loop()  # type: ignore

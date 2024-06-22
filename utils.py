@@ -1,6 +1,10 @@
 import datetime
 
 
+def unique(list):
+    return list(set(list))
+
+
 def is_number(s):
     try:
         float(s)
@@ -21,6 +25,13 @@ def is_date(string, date_formats):
 
 def is_prefix(prefix, full_string):
     return full_string.startswith(prefix)
+
+
+def get_prefixes(s):
+    prefixes = []
+    for i in range(len(s), 0, -1):
+        prefixes.append(s[:i])
+    return prefixes
 
 
 def error(*error_string, new_line=True):
