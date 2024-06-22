@@ -72,24 +72,27 @@ def main():
 
 
 def handle_command(input_string):
-    if input_string[0].lower() in ["exit", "e"]:
-        exit()
-    elif input_string[0].lower() in ["clear", "c"]:
-        subprocess.run("clear")
-    elif input_string[0] in ["date", "d"]:
-        input_string.pop(0)
-        change_date(input_string)
-    elif input_string[0] in ["help", "h"]:
-        print("lol no")
-    elif input_string[0][0] == "+" or is_number(input_string[0]):
-        if len(input_string) > 4:
-            error("invalid entry:", "too many arguments")
-        elif len(input_string) < 4:
-            error("invalid entry:", "incomplete arguments")
+    try:
+        if input_string[0].lower() in ["exit", "e"]:
+            exit()
+        elif input_string[0].lower() in ["clear", "c"]:
+            subprocess.run("clear")
+        elif input_string[0] in ["date", "d"]:
+            input_string.pop(0)
+            change_date(input_string)
+        elif input_string[0] in ["help", "h"]:
+            print("lol no")
+        elif input_string[0][0] == "+" or is_number(input_string[0]):
+            if len(input_string) > 4:
+                error("invalid entry:", "too many arguments")
+            elif len(input_string) < 4:
+                error("invalid entry:", "incomplete arguments")
+            else:
+                print(valid_entry(input_string))
         else:
-            print(valid_entry(input_string))
-    else:
-        error("unknown command:", input_string[0])
+            error("unknown command:", input_string[0])
+    except IndexError:
+        pass
 
 
 def change_date(date_string):
