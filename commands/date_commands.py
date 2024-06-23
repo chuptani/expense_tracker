@@ -13,7 +13,10 @@ def date_not_changed(ctx):
 
 class Date(Command):
     def __init__(self):
-        super().__init__(["date", "d"], "change current date")
+        super().__init__(
+            ["date", "d"],
+            "change current date\nallowed formats: yyyy-mm-dd, mm-dd, dd",
+        )
 
     def run(self, args, ctx):
         if not utils.valid_num_of_args(args, 1):
@@ -28,9 +31,47 @@ class Date(Command):
             date_not_changed(ctx)
 
 
+class Yesterday(Command):
+    def __init__(self):
+        super().__init__(["yesterday", "yes"], "change to yesterday")
+
+    def run(self, args, ctx):
+        if not utils.valid_num_of_args(args, 0, "date:"):
+            date_not_changed(ctx)
+            return
+        ctx.new_date(ctx.today - datetime.timedelta(days=1))
+        date_changed(ctx)
+
+
+class Tomorrow(Command):
+    def __init__(self):
+        super().__init__(["tomorrow", "tom"], "change to tomorrow")
+
+    def run(self, args, ctx):
+        if not utils.valid_num_of_args(args, 0, "date:"):
+            date_not_changed(ctx)
+            return
+        ctx.new_date(ctx.today + datetime.timedelta(days=1))
+        date_changed(ctx)
+
+
+class Today(Command):
+    def __init__(self):
+        super().__init__(["today", "tod"], "change to tomorrow")
+
+    def run(self, args, ctx):
+        if not utils.valid_num_of_args(args, 0, "date:"):
+            date_not_changed(ctx)
+            return
+        ctx.new_date(ctx.today)
+        date_changed(ctx)
+
+
 class Last(Command):
     def __init__(self):
-        super().__init__(["last", "l"], "change to last weekday")
+        super().__init__(
+            ["last", "l"], "change to last weekday (e.g. args: mon, tue, etc.)"
+        )
 
     def run(self, args, ctx):
         if not utils.valid_num_of_args(args, 1, "no weekday provided"):
@@ -49,7 +90,9 @@ class Last(Command):
 
 class Next(Command):
     def __init__(self):
-        super().__init__(["next", "n"], "change to next weekday")
+        super().__init__(
+            ["next", "n"], "change to next weekday (e.g. args: mon, tue, etc.)"
+        )
 
     def run(self, args, ctx):
         if not utils.valid_num_of_args(args, 1, "invalid date:", "no weekday provided"):
@@ -69,6 +112,9 @@ class Next(Command):
 date = Date()
 date.add_subcommand(Last())
 date.add_subcommand(Next())
+date.add_subcommand(Yesterday())
+date.add_subcommand(Tomorrow())
+date.add_subcommand(Today())
 
 date_local_registery = CommandRegistry()
 date_local_registery.register_command(date)

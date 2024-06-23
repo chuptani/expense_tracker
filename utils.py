@@ -14,7 +14,7 @@ def is_number(s):
 
 
 def valid_num_of_args(args, num, command="", no_args="no args provided"):
-    if not args:
+    if num > 0 and not args:
         error(command, no_args)
         return False
     elif len(args) > num:
