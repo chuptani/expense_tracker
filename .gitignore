@@ -1,3 +1,3 @@
-/tuts
-/tests
-/__pycache__
+tuts/
+tests/
+__pycache__/

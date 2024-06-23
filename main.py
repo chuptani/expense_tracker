@@ -43,7 +43,7 @@ class Cli:
     def __init__(self):
         self.ctx = ctx()
 
-        self.registry = CommandRegistry()
+        self.registry = CommandRegistry(ctx)
         self.registry.register_registery(commands.package_registry)
 
     def loop(self):
