@@ -4,10 +4,9 @@ import readline
 import subprocess
 import datetime
 
-from commands import Command, CommandRegistry
+import commands
+from commands.commands import CommandRegistry
 from utils import error, green, red, is_number, is_date, is_prefix
-
-from basic_commands import basic_local_registery
 
 
 class ctx:
@@ -45,7 +44,7 @@ class Cli:
         self.ctx = ctx()
 
         self.registry = CommandRegistry()
-        self.registry.register_registery(basic_local_registery)
+        self.registry.register_registery(commands.package_registry)
 
     def loop(self):
 

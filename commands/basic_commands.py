@@ -1,5 +1,5 @@
 import sys, subprocess
-from commands import Command, CommandRegistry
+from commands.commands import Command, CommandRegistry
 from utils import error, green, red, is_number, is_date, is_prefix, get_prefixes
 
 

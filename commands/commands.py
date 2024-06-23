@@ -14,7 +14,7 @@ class Command:
         for alias in subcommand.aliases:
             self.subcommands[alias] = subcommand
 
-    def execute(self, args, ctx=None):
+    def execute(self, args, ctx):
         if args and args[0] == "help":
             print(self.help())
         elif args and args[0] in self.subcommands:
@@ -23,7 +23,7 @@ class Command:
         else:
             return self.run(args, ctx)
 
-    def run(self, args, ctx=None):
+    def run(self, args, ctx):
         raise NotImplementedError(f"Command {self.name} not implemented.")
 
     def help(self):

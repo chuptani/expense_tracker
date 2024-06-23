@@ -1,0 +1,3 @@
+import commands
+from basic_commands import basic_local_registery
+from date_commands import date_local_registery
