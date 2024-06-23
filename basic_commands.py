@@ -7,7 +7,7 @@ class Exit(Command):
     def __init__(self):
         super().__init__(["exit", "e"], "Exit the program")
 
-    def run(self, args):
+    def run(self, args, ctx=None):
         sys.exit()
 
 
@@ -15,14 +15,14 @@ class Clear(Command):
     def __init__(self):
         super().__init__(["clear", "c"], "Clear the screen")
 
-    def run(self, args):
+    def run(self, args, ctx=None):
         subprocess.run("clear")
         return
 
 
-basic_local_register = CommandRegistry()
-basic_local_register.register_command(Exit())
-basic_local_register.register_command(Clear())
+basic_local_registery = CommandRegistry()
+basic_local_registery.register_command(Exit())
+basic_local_registery.register_command(Clear())
 
 
 def main():

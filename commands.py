@@ -14,16 +14,16 @@ class Command:
         for alias in subcommand.aliases:
             self.subcommands[alias] = subcommand
 
-    def execute(self, args):
+    def execute(self, args, ctx=None):
         if args and args[0] == "help":
             print(self.help())
         elif args and args[0] in self.subcommands:
             subcommand = self.subcommands[args[0]]
-            return subcommand.execute(args[1:])
+            return subcommand.execute(args[1:], ctx)
         else:
-            return self.run(args)
+            return self.run(args, ctx)
 
-    def run(self, args):
+    def run(self, args, ctx=None):
         raise NotImplementedError(f"Command {self.name} not implemented.")
 
     def help(self):
@@ -34,15 +34,16 @@ class Command:
 
 
 class CommandRegistry:
-    def __init__(self):
+    def __init__(self, ctx=None):
         self.commands = {}
+        self.ctx = ctx
 
     def register_command(self, command):
         self.commands[command.name] = command
         for alias in command.aliases:
             self.commands[alias] = command
 
-    def register_register(self, register):
+    def register_registery(self, register):
         for command in list(set(register.commands.values())):
             self.commands[command.name] = command
             for alias in command.aliases:
@@ -56,7 +57,7 @@ class CommandRegistry:
             return self.help()
         command_name = args.pop(0)
         if command_name in self.commands:
-            return self.commands[command_name].execute(args)
+            return self.commands[command_name].execute(args, self.ctx)
         return f"Unknown command: {command_name}"
 
     def help(self):
