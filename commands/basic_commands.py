@@ -20,9 +20,24 @@ class Clear(Command):
         return
 
 
+class Entry(Command):
+    def __init__(self):
+        super().__init__(
+            ["entry", "e"],
+            "add a new entry (if no command is passed new entry is assumed)",
+        )
+
+    def run(self, args, ctx=None):
+        if not utils.valid_num_of_args(args, 4, "entry"):
+            return
+        else:
+            print(utils.valid_entry(args, ctx))
+
+
 basic_local_registery = CommandRegistry()
 basic_local_registery.register_command(Exit())
 basic_local_registery.register_command(Clear())
+basic_local_registery.register_command(Entry())
 
 
 def main():

@@ -59,6 +59,7 @@ class CommandRegistry:
         if command_name in self.commands:
             return self.commands[command_name].execute(args, self.ctx)
         print(f"Unknown command: {command_name}")
+        print(self.help())
 
     def help(self):
         help_message = "Available commands:\n\n"

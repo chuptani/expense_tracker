@@ -13,12 +13,15 @@ def is_number(s):
         return False
 
 
-def valid_num_of_args(args, num, command="", no_args="No args provided"):
+def valid_num_of_args(args, num, command="", no_args="no args provided"):
     if not args:
         error(command, no_args)
         return False
     elif len(args) > num:
-        error(command, "Too many arguments")
+        error(command, "too many arguments")
+        return False
+    elif len(args) < num:
+        error(command, "incomplete arguments")
         return False
     else:
         return True
@@ -54,6 +57,76 @@ def get_prefixes(s):
     for i in range(len(s), 0, -1):
         prefixes.append(s[:i])
     return prefixes
+
+
+def valid_entry(input_string, ctx):
+
+    global current_date
+    transaction_type = input_string[0][0]
+    amount = input_string[0]
+    account = input_string[1].lower()
+    description = input_string[2]
+    category = input_string[3]
+
+    if transaction_type == "+":
+        transaction_type = "credit"
+        amount = float(amount)
+    else:
+        transaction_type = "debit"
+        amount = float("-" + amount)
+
+    if account in ["cash", "card", "s", "r"]:
+        if account == "s":
+            account = "cash"
+        elif account == "r":
+            account = "card"
+    else:
+        while account not in ["cash", "card", "s", "r"]:
+            if account == "":
+                pass
+            else:
+                red(f"'{account}' is not a valid account")
+            account = input("Is the transaction ca[s]h or ca[r]d? : ").lower()
+        if account == "s":
+            account = "cash"
+        elif account == "r":
+            account = "card"
+        green(f"Account set to '{account}'")
+
+    with open("categories", "r") as file:
+        categories = file.readlines()
+    categories = [cat.rstrip("\n") for cat in categories]
+
+    def create_new_category(category):
+        if input(f"'{category}' category does not exist. Create it? [Y/n] ") in [
+            "y",
+            "Y",
+            "",
+        ]:
+            with open("categories", "a") as file:
+                file.write(f"{category}\n")
+            green(f"New category created : '{category}'")
+            return True
+        else:
+            return False
+
+    if category in categories:
+        pass
+    else:
+        if create_new_category(category):
+            pass
+        else:
+            while True:
+                category = input("Enter a category: ")
+                if category == "":
+                    continue
+                if category in categories:
+                    green(f"Category set to '{category}'")
+                    break
+                elif create_new_category(category):
+                    break
+
+    return [ctx.current_date, amount, description, category, account, transaction_type]
 
 
 def error(*error_string, new_line=True):
