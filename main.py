@@ -113,5 +113,4 @@ class Cli:
 
 
 if __name__ == "__main__":
-    cli = Cli()  # type: ignore
-    cli.loop()  # type: ignore
+    Cli().loop()
