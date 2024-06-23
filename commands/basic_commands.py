@@ -1,11 +1,11 @@
 import sys, subprocess
 from commands.commands import Command, CommandRegistry
-from utils import error, green, red, is_number, is_date, is_prefix, get_prefixes
+import utils
 
 
 class Exit(Command):
     def __init__(self):
-        super().__init__(["exit", "e"], "Exit the program")
+        super().__init__(["exit", "e"], "exit the program")
 
     def run(self, args, ctx=None):
         sys.exit()
@@ -13,7 +13,7 @@ class Exit(Command):
 
 class Clear(Command):
     def __init__(self):
-        super().__init__(["clear", "c"], "Clear the screen")
+        super().__init__(["clear", "c"], "clear the screen")
 
     def run(self, args, ctx=None):
         subprocess.run("clear")

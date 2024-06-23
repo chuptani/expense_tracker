@@ -13,6 +13,17 @@ def is_number(s):
         return False
 
 
+def valid_num_of_args(args, num, command="", no_args="No args provided"):
+    if not args:
+        error(command, no_args)
+        return False
+    elif len(args) > num:
+        error(command, "Too many arguments")
+        return False
+    else:
+        return True
+
+
 def is_date(string, date_formats):
     for date_format in date_formats:
         try:
@@ -21,6 +32,17 @@ def is_date(string, date_formats):
         except ValueError:
             continue
     return False
+
+
+def get_date(date, today):
+    if is_date(date, ["%Y-%m-%d"]):
+        return datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    elif is_date(date, ["%m-%d"]):
+        return datetime.datetime.strptime(f"{today.year}-{date}", "%Y-%m-%d").date()
+    elif is_date(date, ["%d"]):
+        return datetime.datetime.strptime(
+            f"{today.year}-{today.month}-{date}", "%Y-%m-%d"
+        ).date()
 
 
 def is_prefix(prefix, full_string):

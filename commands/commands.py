@@ -16,12 +16,12 @@ class Command:
 
     def execute(self, args, ctx):
         if args and args[0] == "help":
-            print(self.help())
+            print(self.help(), end="")
         elif args and args[0] in self.subcommands:
             subcommand = self.subcommands[args[0]]
-            return subcommand.execute(args[1:], ctx)
+            subcommand.execute(args[1:], ctx)
         else:
-            return self.run(args, ctx)
+            self.run(args, ctx)
 
     def run(self, args, ctx):
         raise NotImplementedError(f"Command {self.name} not implemented.")
@@ -52,16 +52,16 @@ class CommandRegistry:
     def execute(self, args):
         # args = command_line.split()
         if not args:
-            return "No command provided."
+            return print("No command provided.")
         elif args[0] == "help":
             return self.help()
         command_name = args.pop(0)
         if command_name in self.commands:
             return self.commands[command_name].execute(args, self.ctx)
-        return f"Unknown command: {command_name}"
+        print(f"Unknown command: {command_name}")
 
     def help(self):
-        help_message = "Available commands:\n"
+        help_message = "Available commands:\n\n"
         for command in list(set(self.commands.values())):
-            help_message += command.help()
-        return help_message
+            help_message += command.help() + "\n"
+        print(help_message, end="")

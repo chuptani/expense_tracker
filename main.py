@@ -6,7 +6,7 @@ import datetime
 
 import commands
 from commands.commands import CommandRegistry
-from utils import error, green, red, is_number, is_date, is_prefix
+import utils
 
 
 class ctx:
@@ -34,7 +34,14 @@ class ctx:
         self.now = datetime.datetime.now()
         self.today = self.now.date()
         self.current_date = self.today
-        self.weekday_num = self.current_date.weekday()
+        self.weekday_num = self.today.weekday()
+        self.weekday = self.weekdays[self.weekday_num]
+
+        self.date_formats = ["%Y-%m-%d", "%m-%d", "%d"]
+
+    def new_date(self, date=datetime.datetime.now().date()):
+        self.current_date = date
+        self.weekday_num = date.weekday()
         self.weekday = self.weekdays[self.weekday_num]
 
 
@@ -43,7 +50,7 @@ class Cli:
     def __init__(self):
         self.ctx = ctx()
 
-        self.registry = CommandRegistry(ctx)
+        self.registry = CommandRegistry(self.ctx)
         self.registry.register_registery(commands.package_registry)
 
     def loop(self):
@@ -65,18 +72,15 @@ class Cli:
         while True:
             try:
 
-                weekday = self.ctx.weekdays[self.ctx.weekday_num]
                 input_string = shlex.split(
                     input(
-                        f"\033[38;5;12m({self.ctx.current_date} | {weekday})\033[0m > "
+                        f"\033[38;5;12m({self.ctx.current_date} | {self.ctx.weekday})\033[0m > "
                     )
                 )
 
                 _, columns = os.popen("stty size", "r").read().split()
 
-                result = self.registry.execute(input_string)
-                if result:
-                    print(result, end="")
+                self.registry.execute(input_string)
 
                 print("\033[38;5;237m-\033[0m" * int(columns))
 
@@ -87,9 +91,9 @@ class Cli:
                 print("\033[38;5;237m-\033[0m" * int(columns))
                 continue
             except FileNotFoundError:
-                error("category file does not exist")
+                utils.error("category file does not exist")
             except ValueError:
-                error("invalid entry:", "quotation not closed")
+                utils.error("invalid entry:", "quotation not closed")
 
 
 #     def handle_command(self.ctx, input_string):
