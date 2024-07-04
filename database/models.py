@@ -15,7 +15,7 @@ from sqlalchemy.orm import (
     DeclarativeBase,
 )
 
-DATABASE_URL = "sqlite+pysqlite:///database/expense_tracker.db"
+DATABASE_URL = "sqlite+pysqlite:///expense_tracker.db"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine, expire_on_commit=False)
 session = Session()
@@ -116,4 +116,4 @@ class Person(Base):
         )
 
 
-Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)
