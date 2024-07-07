@@ -1,12 +1,9 @@
 import datetime
-from datetime import timedelta
 from decimal import Decimal
 
-from sqlalchemy import (
-    create_engine,
-    String,
-    ForeignKey,
-)
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from sqlalchemy import create_engine, String, ForeignKey, select, func
 from sqlalchemy.orm import (
     relationship,
     sessionmaker,
@@ -89,6 +86,7 @@ class Account(Base):
     __tablename__ = "accounts"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    balance: Mapped[Decimal] = mapped_column(nullable=False)
     expenses: Mapped[list["Expense"]] = relationship(back_populates="account")
     incomes: Mapped[list["Income"]] = relationship(back_populates="account")
 
@@ -106,6 +104,7 @@ class Person(Base):
     credit_id: Mapped[int] = mapped_column(
         ForeignKey("income_sources.id"), nullable=False
     )
+    balance: Mapped[Decimal] = mapped_column(nullable=False)
     debit: Mapped["ExpenseCategory"] = relationship()
     credit: Mapped["IncomeSource"] = relationship()
 
