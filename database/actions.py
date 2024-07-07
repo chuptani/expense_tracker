@@ -1,11 +1,8 @@
-# import json
-# import bcrypt
-# from datetime import datetime
 import utils
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
 from sqlalchemy import event
 
-from models import (
+from database.models import (
     Expense,
     ExpenseCategory,
     Income,
@@ -26,12 +23,36 @@ def add_expense(date, amount, category_id, account_id, notes):
     )
     session.add(expense)
     session.flush()
+    expense.account.balance -= amount
+    session.flush()
+    # utils.green(f"Expense '{expense.notes}' added successfully")
+
+
+def delete_expense(expense_id):
+    expense = session.query(Expense).filter_by(id=expense_id).first()
+    if expense:
+        session.delete(expense)
+        session.flush()
+    else:
+        utils.error(f"Expense with ID {expense_id} does not exist")
 
 
 def add_category(name):
+    if session.query(ExpenseCategory).filter_by(name=name).first():
+        utils.error(f"Category {name} already exists")
+        return
     category = ExpenseCategory(name=name)
     session.add(category)
     session.flush()
+
+
+def delete_category(category_id):
+    category = session.query(ExpenseCategory).filter_by(id=category_id).first()
+    if category:
+        session.delete(category)
+        session.flush()
+    else:
+        utils.error(f"Category with ID {category_id} does not exist")
 
 
 def add_income(date, amount, source_id, account_id, notes):
@@ -44,18 +65,53 @@ def add_income(date, amount, source_id, account_id, notes):
     )
     session.add(income)
     session.flush()
+    income.account.balance += amount
+    session.flush()
+
+
+def delete_income(income_id):
+    income = session.query(Income).filter_by(id=income_id).first()
+    if income:
+        session.delete(income)
+        session.flush()
+    else:
+        utils.error(f"Income with ID {income_id} does not exist")
 
 
 def add_income_source(name):
+    if session.query(IncomeSource).filter_by(name=name).first():
+        utils.error(f"Income source {name} already exists")
+        return
     source = IncomeSource(name=name)
     session.add(source)
     session.flush()
 
 
+def delete_income_source(source_id):
+    source = session.query(IncomeSource).filter_by(id=source_id).first()
+    if source:
+        session.delete(source)
+        session.flush()
+    else:
+        utils.error(f"Income source with ID {source_id} does not exist")
+
+
 def add_account(name, balance=Decimal(0)):
+    if session.query(Account).filter_by(name=name).first():
+        utils.error(f"Account {name} already exists")
+        return
     account = Account(name=name, balance=balance)
     session.add(account)
     session.flush()
+
+
+def delete_account(account_id):
+    account = session.query(Account).filter_by(id=account_id).first()
+    if account:
+        session.delete(account)
+        session.flush()
+    else:
+        utils.error(f"Account with ID {account_id} does not exist")
 
 
 def add_person(name, balance=Decimal(0)):
@@ -85,51 +141,34 @@ def add_person(name, balance=Decimal(0)):
         session.flush()
 
 
-def list_categories():
-    categories = session.query(ExpenseCategory).all()
-    for category in categories:
-        print(f"ID: {category.id}, Name: {category.name}")
+def delete_person(person_id):
+    person = session.query(Person).filter_by(id=person_id).first()
+    if person:
+        session.delete(person)
+        session.flush()
+    else:
+        utils.error(f"Person with ID {person_id} does not exist")
 
 
-def list_expense(date):
-    expenses = session.query(Expense).filter_by(date=date).all()
-    for expense in expenses:
-        print(
-            f"ID: {expense.id}, Date: {expense.date}, Amount: {expense.amount:.2f}, Category ID: {expense.category_id}, account_id: {expense.account_id}, Notes: {expense.notes}"
-        )
-
-
-@event.listens_for(Income, "after_insert")
-def after_insert_incom(mapper, connection, target):
-    account = target.account
-    account.balance += target.amount
-
-
-@event.listens_for(Income, "after_delete")
-def after_delete_income(mapper, connection, target):
-    account = target.account
-    account.balance -= target.amount
-
-
-@event.listens_for(Expense, "after_insert")
-def after_insert_expense(mapper, connection, target):
-    account = target.account
-    account.balance -= target.amount
-
-
-@event.listens_for(Expense, "after_delete")
-def after_delete_expense(mapper, connection, target):
-    account = target.account
-    account.balance += target.amount
-
-
-if __name__ == "__main__":
-    # add_expense(datetime(2021, 1, 1), Decimal(100), 1, 1, "Test expense")
-    # add_category("Test category")
-    # add_income(datetime(2021, 1, 1), Decimal(100), 1, 1, "Test income")
-    # add_income_source("Test source")
-    # add_account("Test account")
-    add_person("Justin")
-
-    session.commit()
-    session.close()
+# @event.listens_for(Income, "after_insert")
+# def after_insert_incom(mapper, connection, target):
+#     account = target.account
+#     account.balance += target.amount
+#
+#
+# @event.listens_for(Income, "after_delete")
+# def after_delete_income(mapper, connection, target):
+#     account = target.account
+#     account.balance -= target.amount
+#
+#
+# @event.listens_for(Expense, "after_insert")
+# def after_insert_expense(mapper, connection, target):
+#     account = target.account
+#     account.balance -= target.amount
+#
+#
+# @event.listens_for(Expense, "after_delete")
+# def after_delete_expense(mapper, connection, target):
+#     account = target.account
+#     account.balance += target.amount

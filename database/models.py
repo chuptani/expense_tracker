@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import Numeric
 
 from sqlalchemy import create_engine, String, ForeignKey, select, func
 from sqlalchemy.orm import (
@@ -12,7 +13,7 @@ from sqlalchemy.orm import (
     DeclarativeBase,
 )
 
-DATABASE_URL = "sqlite+pysqlite:///expense_tracker.db"
+DATABASE_URL = "sqlite+pysqlite:///database/expense_tracker.db"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine, expire_on_commit=False)
 session = Session()
@@ -26,7 +27,7 @@ class Expense(Base):
     __tablename__ = "expenses"
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[datetime.date] = mapped_column(nullable=False)
-    amount: Mapped[Decimal] = mapped_column(nullable=False)
+    amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     category_id: Mapped[int] = mapped_column(
         ForeignKey("expense_categories.id"), nullable=False
     )
@@ -56,7 +57,7 @@ class Income(Base):
     __tablename__ = "incomes"
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[datetime.date] = mapped_column(nullable=False)
-    amount: Mapped[Decimal] = mapped_column(nullable=False)
+    amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     source_id: Mapped[int] = mapped_column(
         ForeignKey("income_sources.id"), nullable=False
     )
@@ -86,12 +87,12 @@ class Account(Base):
     __tablename__ = "accounts"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    balance: Mapped[Decimal] = mapped_column(nullable=False)
+    balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     expenses: Mapped[list["Expense"]] = relationship(back_populates="account")
     incomes: Mapped[list["Income"]] = relationship(back_populates="account")
 
     def __repr__(self) -> str:
-        return f"<Account(id={self.id}, name='{self.name}')>"
+        return f"<Account(id={self.id}, name='{self.name}', balance={self.balance})>"
 
 
 class Person(Base):
@@ -104,14 +105,14 @@ class Person(Base):
     credit_id: Mapped[int] = mapped_column(
         ForeignKey("income_sources.id"), nullable=False
     )
-    balance: Mapped[Decimal] = mapped_column(nullable=False)
+    balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     debit: Mapped["ExpenseCategory"] = relationship()
     credit: Mapped["IncomeSource"] = relationship()
 
     def __repr__(self) -> str:
         return (
             f"<Person(id={self.id}, name='{self.name}', "
-            f"debit_id={self.debit_id}, credit_id={self.credit_id})>"
+            f"debit_id={self.debit_id}, credit_id={self.credit_id}, balance={self.balance})>"
         )
 
 
