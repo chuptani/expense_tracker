@@ -1,6 +1,6 @@
 from commands import Command, CommandRegistry
 import datetime
-import utils
+from utils import utils
 
 
 def date_changed(ctx):
@@ -118,3 +118,22 @@ date.add_subcommand(Today())
 
 date_local_registery = CommandRegistry()
 date_local_registery.register_command(date)
+
+
+def main():
+    registry = CommandRegistry()
+
+    registry.register_command(date)
+
+    while True:
+        try:
+            command_line = input("> ")
+            result = registry.execute(command_line)
+            if result:
+                print(result)
+        except SystemExit:
+            exit()
+
+
+if __name__ == "__main__":
+    main()

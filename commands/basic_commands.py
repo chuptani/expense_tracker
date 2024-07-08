@@ -1,6 +1,6 @@
 import sys, subprocess
-from commands.commands import Command, CommandRegistry
-import utils
+from commands import Command, CommandRegistry
+from utils import utils
 
 
 class Exit(Command):

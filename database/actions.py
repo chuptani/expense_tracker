@@ -1,4 +1,5 @@
 import utils
+from utils.logger import cli_logger
 from decimal import Decimal
 from sqlalchemy import event
 
@@ -13,33 +14,34 @@ from database.models import (
 )
 
 
-def add_expense(date, amount, category_id, account_id, notes):
+def add_expense(date, amount, account_id, category_id, notes):
     expense = Expense(
         date=date,
         amount=amount,
-        category_id=category_id,
         account_id=account_id,
+        category_id=category_id,
         notes=notes,
     )
     session.add(expense)
     session.flush()
     expense.account.balance -= amount
     session.flush()
-    # utils.green(f"Expense '{expense.notes}' added successfully")
+    # cli_logger.info(f"Expense '{expense.notes}' added successfully")
 
 
 def delete_expense(expense_id):
     expense = session.query(Expense).filter_by(id=expense_id).first()
     if expense:
+        expense.account.balance -= expense.amount
         session.delete(expense)
         session.flush()
     else:
-        utils.error(f"Expense with ID {expense_id} does not exist")
+        cli_logger.error(f"Expense with ID {expense_id} does not exist")
 
 
 def add_category(name):
     if session.query(ExpenseCategory).filter_by(name=name).first():
-        utils.error(f"Category {name} already exists")
+        cli_logger.error(f"Category {name} already exists")
         return
     category = ExpenseCategory(name=name)
     session.add(category)
@@ -52,7 +54,11 @@ def delete_category(category_id):
         session.delete(category)
         session.flush()
     else:
-        utils.error(f"Category with ID {category_id} does not exist")
+        cli_logger.error(f"Category with ID {category_id} does not exist")
+
+
+def get_categories():
+    return session.query(ExpenseCategory).all()
 
 
 def add_income(date, amount, source_id, account_id, notes):
@@ -75,12 +81,12 @@ def delete_income(income_id):
         session.delete(income)
         session.flush()
     else:
-        utils.error(f"Income with ID {income_id} does not exist")
+        cli_logger.error(f"Income with ID {income_id} does not exist")
 
 
 def add_income_source(name):
     if session.query(IncomeSource).filter_by(name=name).first():
-        utils.error(f"Income source {name} already exists")
+        cli_logger.error(f"Income source {name} already exists")
         return
     source = IncomeSource(name=name)
     session.add(source)
@@ -93,12 +99,12 @@ def delete_income_source(source_id):
         session.delete(source)
         session.flush()
     else:
-        utils.error(f"Income source with ID {source_id} does not exist")
+        cli_logger.error(f"Income source with ID {source_id} does not exist")
 
 
 def add_account(name, balance=Decimal(0)):
     if session.query(Account).filter_by(name=name).first():
-        utils.error(f"Account {name} already exists")
+        cli_logger.error(f"Account {name} already exists")
         return
     account = Account(name=name, balance=balance)
     session.add(account)
@@ -111,12 +117,16 @@ def delete_account(account_id):
         session.delete(account)
         session.flush()
     else:
-        utils.error(f"Account with ID {account_id} does not exist")
+        cli_logger.error(f"Account with ID {account_id} does not exist")
+
+
+def get_accounts():
+    return session.query(Account).all()
 
 
 def add_person(name, balance=Decimal(0)):
     if session.query(Person).filter_by(name=name).first():
-        utils.error(f"Person {name} already exists")
+        cli_logger.error(f"Person {name} already exists")
         return
 
     if not session.query(ExpenseCategory).filter_by(name=name).first():
@@ -147,7 +157,7 @@ def delete_person(person_id):
         session.delete(person)
         session.flush()
     else:
-        utils.error(f"Person with ID {person_id} does not exist")
+        cli_logger.error(f"Person with ID {person_id} does not exist")
 
 
 # @event.listens_for(Income, "after_insert")

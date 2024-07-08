@@ -12,5 +12,14 @@ from database.models import session, Person, ExpenseCategory, IncomeSource, Expe
 #     "test expense",
 # )
 
-actions.delete_expense(1)
+# actions.delete_expense(1)
+
+# actions.add_category("food")
+# actions.delete_category(1)
+
+# actions.add_account("cash")
+# actions.add_account("card")
+# for account in actions.get_accounts():
+#     session.delete(account)
+actions.add_income_source("dad")
 session.commit()

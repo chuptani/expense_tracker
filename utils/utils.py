@@ -13,16 +13,13 @@ def is_number(s):
         return False
 
 
-def valid_num_of_args(args, num, command="", no_args="no args provided"):
+def valid_num_of_args(args, num, no_args="no args provided"):
     if num > 0 and not args:
-        error(command, no_args)
-        return False
+        raise ValueError(no_args)
     elif len(args) > num:
-        error(command, "too many arguments")
-        return False
+        raise ValueError("too many arguments")
     elif len(args) < num:
-        error(command, "incomplete arguments")
-        return False
+        raise ValueError("incomplete arguments")
     else:
         return True
 
@@ -126,7 +123,7 @@ def valid_entry(input_string, ctx):
                 elif create_new_category(category):
                     break
 
-    return [ctx.current_date, amount, description, category, account, transaction_type]
+    print([ctx.current_date, amount, description, category, account, transaction_type])
 
 
 def error(*error_string, new_line=True):

@@ -1,7 +1,6 @@
 import datetime
 from decimal import Decimal
 
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import Numeric
 
 from sqlalchemy import create_engine, String, ForeignKey, select, func
@@ -28,10 +27,10 @@ class Expense(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[datetime.date] = mapped_column(nullable=False)
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), nullable=False)
     category_id: Mapped[int] = mapped_column(
         ForeignKey("expense_categories.id"), nullable=False
     )
-    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), nullable=False)
     notes: Mapped[str]
     category: Mapped["ExpenseCategory"] = relationship(back_populates="expenses")
     account: Mapped["Account"] = relationship(back_populates="expenses")
