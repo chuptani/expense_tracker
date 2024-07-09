@@ -38,7 +38,7 @@ class Expense(Base):
     def __repr__(self) -> str:
         return (
             f"<Expense(id={self.id}, date={self.date}, amount={self.amount:.2f}, "
-            f"category_id={self.category_id}, account_id={self.account_id}, notes={self.notes})>"
+            f"account_id={self.account_id}, category_id={self.category_id}, notes={self.notes})>"
         )
 
 
@@ -57,10 +57,10 @@ class Income(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[datetime.date] = mapped_column(nullable=False)
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), nullable=False)
     source_id: Mapped[int] = mapped_column(
         ForeignKey("income_sources.id"), nullable=False
     )
-    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), nullable=False)
     notes: Mapped[str]
     source: Mapped["IncomeSource"] = relationship(back_populates="incomes")
     account: Mapped["Account"] = relationship(back_populates="incomes")
@@ -68,7 +68,7 @@ class Income(Base):
     def __repr__(self) -> str:
         return (
             f"<Income(id={self.id}, date={self.date}, amount={self.amount:.2f}, "
-            f"source_id={self.source_id}, account_id={self.account_id}, notes={self.notes})>"
+            f"account_id={self.account_id}, source_id={self.source_id}, notes={self.notes})>"
         )
 
 

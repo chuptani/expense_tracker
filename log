@@ -15,3 +15,4 @@
 [0;31m[commands.add_commands] - ERROR:[0m incomplete arguments
 [0;31m[commands.add_commands] - ERROR:[0m incomplete arguments
 [0;31m[commands.add_commands] - ERROR:[0m too many arguments
+[0;33m[commands.list_commands] - WARNING:[0m command not defined

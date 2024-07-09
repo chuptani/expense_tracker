@@ -2,24 +2,23 @@ from datetime import datetime
 from decimal import Decimal
 from database import actions
 from database.models import session, Person, ExpenseCategory, IncomeSource, Expense
+from main import Ctx
 
+
+ctx = Ctx(session)
+# actions.add_income_source("salary", ctx)
+# actions.add_category("food", ctx)
+# session.commit()
 
 # actions.add_expense(
-#     datetime(2024, 7, 7).date(),
-#     Decimal(100.50),
-#     1,
-#     1,
-#     "test expense",
+#     date=ctx.current_date,
+#     amount=Decimal(100.50),
+#     account_id=1,
+#     category_id=1,
+#     notes="test expense",
+#     ctx=ctx,
 # )
 
-# actions.delete_expense(1)
-
-# actions.add_category("food")
-# actions.delete_category(1)
-
-# actions.add_account("cash")
-# actions.add_account("card")
-# for account in actions.get_accounts():
-#     session.delete(account)
-actions.add_income_source("dad")
-session.commit()
+actions.add_account("cash", ctx)
+actions.add_account("card", ctx)
+ctx.session.commit()

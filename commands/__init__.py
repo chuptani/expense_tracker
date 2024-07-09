@@ -3,8 +3,10 @@ from commands.commands import Command, CommandRegistry
 from commands.basic_commands import basic_local_registery
 from commands.date_commands import date_local_registery
 from commands.add_commands import add_local_registery
+from commands.list_commands import list_local_registery
 
 package_registry = CommandRegistry()
 package_registry.register_registery(basic_local_registery)
 package_registry.register_registery(date_local_registery)
 package_registry.register_registery(add_local_registery)
+package_registry.register_registery(list_local_registery)

@@ -36,20 +36,67 @@ class Entry(Command):
                 if utils.valid_num_of_args(args, 4):
                     entry_type, entry = validation.validate_entry_string(args, ctx)
                     if entry_type == "expense":
-                        actions.add_expense(*entry)
+                        actions.add_expense(*(entry + [ctx]))
                         cli_logger.info(f"Expense '{entry[4]}' added successfully")
                         return
                     elif entry_type == "income":
-                        actions.add_income(*entry)
+                        actions.add_income(*(entry + [ctx]))
                         cli_logger.info(f"Income '{entry[4]}' added successfully")
                         return
             except ValueError as e:
+                # TODO: silent erros
                 if str(e) == "Invalid account":
                     args[1] = validation.fix_account(args[1])
                 elif str(e) == "Invalid category":
-                    args[2] = validation.fix_category(args[2])
+                    args[2] = validation.fix_category(args[2], ctx)
                 elif str(e) == "Invalid source":
-                    args[2] = validation.fix_source(args[2])
+                    args[2] = validation.fix_source(args[2], ctx)
+                else:
+                    logger.error(e)
+                    break
+
+
+class Expense(Command):
+    def __init__(self):
+        super().__init__(["expense", "e"], "add a new expense")
+
+    def run(self, args, ctx=None):
+        while True:
+            try:
+                if utils.valid_num_of_args(args, 4):
+                    expense = validation.validate_expense_string(args, ctx)
+                    actions.add_expense(*expense)
+                    cli_logger.info(f"Expense '{expense[4]}' added successfully")
+                    return
+            except ValueError as e:
+                # TODO: silent erros
+                if str(e) == "Invalid account":
+                    args[1] = validation.fix_account(args[1])
+                elif str(e) == "Invalid category":
+                    args[2] = validation.fix_category(args[2], ctx)
+                else:
+                    logger.error(e)
+                    break
+
+
+class Income(Command):
+    def __init__(self):
+        super().__init__(["income", "i"], "add a new income")
+
+    def run(self, args, ctx=None):
+        while True:
+            try:
+                if utils.valid_num_of_args(args, 4):
+                    income = validation.validate_income_string(args, ctx)
+                    actions.add_expense(*income)
+                    cli_logger.info(f"Income '{income[4]}' added successfully")
+                    return
+            except ValueError as e:
+                # TODO: silent erros
+                if str(e) == "Invalid account":
+                    args[1] = validation.fix_account(args[1])
+                elif str(e) == "Invalid source":
+                    args[2] = validation.fix_source(args[2], ctx)
                 else:
                     logger.error(e)
                     break
@@ -58,6 +105,8 @@ class Entry(Command):
 add = Add()
 add.add_subcommand(Account())
 add.add_subcommand(Entry())
+add.add_subcommand(Expense())
+add.add_subcommand(Income())
 
 add_local_registery = CommandRegistry()
 add_local_registery.register_command(add)
@@ -69,9 +118,7 @@ def main():
     while True:
         try:
             command_line = input("> ")
-            result = registry.execute(command_line)
-            if result:
-                print(result)
+            registry.execute(command_line)
         except SystemExit:
             exit()
 

@@ -2,7 +2,11 @@ import datetime
 
 
 class Ctx:
-    def __init__(self):
+    def __init__(self, session, registry=None):
+
+        self.session = session
+        self.cli = registry
+
         self.weekdays = {
             0: "Mon",
             1: "Tue",

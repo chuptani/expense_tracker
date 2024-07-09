@@ -6,10 +6,12 @@ import datetime
 import logging
 
 
+from context import Ctx
 import commands
 from commands import CommandRegistry
 from utils import utils, validation
 from utils.logger import cli_logger, BasicFormatter
+from database.models import session
 
 
 class RootFormatter(logging.Formatter):
@@ -18,7 +20,7 @@ class RootFormatter(logging.Formatter):
         logging.INFO: "\033[0;32m",  # Green
         logging.WARNING: "\033[0;33m",  # Yellow
         logging.ERROR: "\033[0;31m",  # Red
-        logging.CRITICAL: "\033[1;31m",  # Bright Red
+        logging.CRITICAL: "\033[1;31m",  # Red1
     }
     RESET = "\033[0m"
 
@@ -35,6 +37,7 @@ file_handler.setFormatter(RootFormatter())
 root_logger.addHandler(file_handler)
 
 # TODO: create seperate logger to print to stdout
+
 
 # logger = logging.getLogger(__name__)
 # stream_handler = logging.StreamHandler()
@@ -59,49 +62,15 @@ class cli_CommandRegistry(CommandRegistry):
         cli_logger.error(f"command '{command_name}' not found")
 
 
-class ctx:
-    def __init__(self):
-        self.weekdays = {
-            0: "Mon",
-            1: "Tue",
-            2: "Wed",
-            3: "Thu",
-            4: "Fri",
-            5: "Sat",
-            6: "Sun",
-        }
-
-        self.dayweeks = {
-            "mon": 0,
-            "tue": 1,
-            "wed": 2,
-            "thu": 3,
-            "fri": 4,
-            "sat": 5,
-            "sun": 6,
-        }
-
-        self.now = datetime.datetime.now()
-        self.today = self.now.date()
-        self.current_date = self.today
-        self.weekday_num = self.today.weekday()
-        self.weekday = self.weekdays[self.weekday_num]
-
-        self.date_formats = ["%Y-%m-%d", "%m-%d", "%d"]
-
-    def new_date(self, date=datetime.datetime.now().date()):
-        self.current_date = date
-        self.weekday_num = date.weekday()
-        self.weekday = self.weekdays[self.weekday_num]
-
-
 class Cli:
 
     def __init__(self):
-        self.ctx = ctx()
 
+        self.ctx = Ctx(session)
         self.registry = cli_CommandRegistry(self.ctx)
         self.registry.register_registery(commands.package_registry)
+
+        self.ctx.cli = self.registry
 
     def loop(self):
 
@@ -142,6 +111,7 @@ class Cli:
             except FileNotFoundError:
                 utils.error("category file does not exist")
             except ValueError as e:
+                print("test")
                 pass
                 # logger.error(e)
 

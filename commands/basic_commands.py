@@ -1,6 +1,14 @@
+import logging
 import sys, subprocess
 from commands import Command, CommandRegistry
 from utils import utils
+from utils.logger import BasicFormatter, cli_logger
+
+
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter(BasicFormatter())
+logger.addHandler(handler)
 
 
 class Exit(Command):
@@ -34,10 +42,28 @@ class Entry(Command):
             print(utils.valid_entry(args, ctx))
 
 
+class Commit(Command):
+    def __init__(self):
+        super().__init__(["commit"], "comit the current session to the database")
+
+    def run(self, args, ctx):
+        ctx.cli.execute(["ls"])
+        answer = input(
+            "Are you sure you want to comit the session to the database? (Y/n): "
+        )
+        if answer in ["n", "N"]:
+            return
+        print("Comitting session to database...")
+        ctx.session.commit()
+        cli_logger.info("Session comitted to database.")
+        return
+
+
 basic_local_registery = CommandRegistry()
 basic_local_registery.register_command(Exit())
 basic_local_registery.register_command(Clear())
 basic_local_registery.register_command(Entry())
+basic_local_registery.register_command(Commit())
 
 
 def main():
@@ -49,9 +75,7 @@ def main():
     while True:
         try:
             command_line = input("> ")
-            result = registry.execute(command_line)
-            if result:
-                print(result)
+            registry.execute(command_line)
         except SystemExit:
             exit()
 

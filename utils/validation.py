@@ -43,7 +43,7 @@ def validate_source_string(source):
 
 
 def validate_expense_string(input_string, ctx):
-    amount = validate_amount_string(input_string[0])
+    amount = abs(validate_amount_string(input_string[0]))
     account_id = validate_account_string(input_string[1])
     category_id = validate_category_string(input_string[2])
     notes = input_string[3]
@@ -57,7 +57,7 @@ def validate_expense_string(input_string, ctx):
 
 
 def validate_income_string(input_string, ctx):
-    amount = validate_amount_string(input_string[0])
+    amount = abs(validate_amount_string(input_string[0]))
     account_id = validate_account_string(input_string[1])
     source_id = validate_source_string(input_string[2])
     notes = input_string[3]
@@ -105,14 +105,14 @@ def fix_account(account):
     return account
 
 
-def fix_category(category):
+def fix_category(category, ctx):
     while True:
         if category and input("Create it? [Y/n] ") in [
             "y",
             "Y",
             "",
         ]:
-            actions.add_category(category)
+            actions.add_category(category, ctx)
             cli_logger.info(f"New category created : '{category}'")
             break
         print()
@@ -131,14 +131,14 @@ def fix_category(category):
     return category
 
 
-def fix_source(source):
+def fix_source(source, ctx):
     while True:
         if source and input("Create it? [Y/n] ") in [
             "y",
             "Y",
             "",
         ]:
-            actions.add_income_source(source)
+            actions.add_income_source(source, ctx)
             cli_logger.info(f"New source created : '{source}'")
             break
         sources = [sou.name for sou in session.query(IncomeSource).all()]
