@@ -9,6 +9,8 @@ handler = logging.StreamHandler()
 handler.setFormatter(BasicFormatter())
 logger.addHandler(handler)
 
+# TODO: silent erros
+
 
 class Add(Command):
     def __init__(self):
@@ -16,14 +18,6 @@ class Add(Command):
 
     def run(self, args, ctx=None):
         pass
-
-
-class Account(Command):
-    def __init__(self):
-        super().__init__(["account", "a"], "add a new account")
-
-    def run(self, args, ctx=None):
-        logger.warning("command not defined")
 
 
 class Entry(Command):
@@ -44,7 +38,6 @@ class Entry(Command):
                         cli_logger.info(f"Income '{entry[4]}' added successfully")
                         return
             except ValueError as e:
-                # TODO: silent erros
                 if str(e) == "Invalid account":
                     args[1] = validation.fix_account(args[1])
                 elif str(e) == "Invalid category":
@@ -58,7 +51,7 @@ class Entry(Command):
 
 class Expense(Command):
     def __init__(self):
-        super().__init__(["expense", "e"], "add a new expense")
+        super().__init__(["expense", "exp" "e"], "add a new expense")
 
     def run(self, args, ctx=None):
         while True:
@@ -69,7 +62,6 @@ class Expense(Command):
                     cli_logger.info(f"Expense '{expense[4]}' added successfully")
                     return
             except ValueError as e:
-                # TODO: silent erros
                 if str(e) == "Invalid account":
                     args[1] = validation.fix_account(args[1])
                 elif str(e) == "Invalid category":
@@ -81,7 +73,7 @@ class Expense(Command):
 
 class Income(Command):
     def __init__(self):
-        super().__init__(["income", "i"], "add a new income")
+        super().__init__(["income", "inc", "i"], "add a new income")
 
     def run(self, args, ctx=None):
         while True:
@@ -92,7 +84,6 @@ class Income(Command):
                     cli_logger.info(f"Income '{income[4]}' added successfully")
                     return
             except ValueError as e:
-                # TODO: silent erros
                 if str(e) == "Invalid account":
                     args[1] = validation.fix_account(args[1])
                 elif str(e) == "Invalid source":
@@ -102,11 +93,66 @@ class Income(Command):
                     break
 
 
+class Category(Command):
+    def __init__(self):
+        super().__init__(["category", "cat", "c"], "add a new category")
+
+    def run(self, args, ctx=None):
+        try:
+            utils.valid_num_of_args(args, 1)
+            actions.add_category(args[0], ctx)
+            cli_logger.info(f"Category '{args[0]}' added successfully")
+        except ValueError as e:
+            cli_logger.error(e)
+
+
+class Source(Command):
+    def __init__(self):
+        super().__init__(["source", "sou", "s"], "add a new source")
+
+    def run(self, args, ctx=None):
+        try:
+            utils.valid_num_of_args(args, 1)
+            actions.add_source(args[0], ctx)
+            cli_logger.info(f"Source '{args[0]}' added successfully")
+        except ValueError as e:
+            cli_logger.error(e)
+
+
+class Account(Command):
+    def __init__(self):
+        super().__init__(["account", "acc", "a"], "add a new account")
+
+    def run(self, args, ctx=None):
+        try:
+            utils.valid_num_of_args(args, 1)
+            actions.add_account(args[0], ctx)
+            cli_logger.info(f"Account '{args[0]}' added successfully")
+        except ValueError as e:
+            cli_logger.error(e)
+
+
+class Person(Command):
+    def __init__(self):
+        super().__init__(["person", "per", "p"], "add a new person")
+
+    def run(self, args, ctx=None):
+        try:
+            utils.valid_num_of_args(args, 1)
+            actions.add_person(args[0], ctx)
+            cli_logger.info(f"Person '{args[0]}' added successfully")
+        except ValueError as e:
+            cli_logger.error(e)
+
+
 add = Add()
-add.add_subcommand(Account())
 add.add_subcommand(Entry())
 add.add_subcommand(Expense())
+add.add_subcommand(Category())
 add.add_subcommand(Income())
+add.add_subcommand(Source())
+add.add_subcommand(Account())
+add.add_subcommand(Person())
 
 add_local_registery = CommandRegistry()
 add_local_registery.register_command(add)

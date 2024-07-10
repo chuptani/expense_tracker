@@ -1,17 +1,16 @@
 import os
 import shlex
 import readline
-import subprocess
-import datetime
 import logging
 
 
 from context import Ctx
 import commands
 from commands import CommandRegistry
-from utils import utils, validation
+from utils import validation
 from utils.logger import cli_logger, BasicFormatter
 from database.models import session
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class RootFormatter(logging.Formatter):
@@ -37,7 +36,6 @@ file_handler.setFormatter(RootFormatter())
 root_logger.addHandler(file_handler)
 
 # TODO: create seperate logger to print to stdout
-
 
 # logger = logging.getLogger(__name__)
 # stream_handler = logging.StreamHandler()
@@ -80,13 +78,9 @@ class Cli:
         print()
         print("Use 'help' command to get a list of options")
         print()
-        self.ctx.weekday = self.ctx.weekdays[self.ctx.weekday_num]
         print(
-            f"Today's date: \033[38;5;12m{self.ctx.current_date} | {self.ctx.weekday}\033[0m"
+            f"Today's date: \033[38;5;12m{self.ctx.current_date} | {self.ctx.current_week.weekday}\033[0m"
         )
-
-        # _, columns = os.popen("stty size", "r").read().split()
-        # print("\033[38;5;237m-\033[0m" * int(columns))
 
         while True:
             try:
@@ -96,7 +90,7 @@ class Cli:
 
                 input_string = shlex.split(
                     input(
-                        f"\033[38;5;12m({self.ctx.current_date} | {self.ctx.weekday})\033[0m > "
+                        f"\033[38;5;12m({self.ctx.current_date} | {self.ctx.current_week.weekday})\033[0m > "
                     )
                 )
 
@@ -108,12 +102,13 @@ class Cli:
                 print()
                 # print("\033[38;5;237m-\033[0m" * int(columns))
                 continue
-            except FileNotFoundError:
-                utils.error("category file does not exist")
             except ValueError as e:
-                print("test")
                 pass
-                # logger.error(e)
+            except NotImplementedError as e:
+                cli_logger.error(e)
+            except SQLAlchemyError as e:
+                session.rollback()
+                cli_logger.error(e)
 
 
 if __name__ == "__main__":

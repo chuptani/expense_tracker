@@ -1,4 +1,6 @@
 import logging
+
+from sqlalchemy import ExecutionContext
 from utils.logger import BasicFormatter
 from decimal import Decimal
 
@@ -15,9 +17,9 @@ from database.models import (
 )
 
 logger = logging.getLogger(__name__)
-handler = logging.StreamHandler()
-handler.setFormatter(BasicFormatter())
-logger.addHandler(handler)
+# handler = logging.StreamHandler()
+# handler.setFormatter(BasicFormatter())
+# logger.addHandler(handler)
 
 
 def add_expense(date, amount, account_id, category_id, notes, ctx):
@@ -29,22 +31,24 @@ def add_expense(date, amount, account_id, category_id, notes, ctx):
         notes=notes,
     )
     session.add(expense)
+    expense.account.balance -= amount
     session.flush()
-    if expense in ctx.session_deletions["expenses"]:
-        ctx.session_deletions["expenses"].remove(expense)
+    if expense in ctx.session_deletions[ctx.entry.EXPENSE]:
+        ctx.session_deletions[ctx.entry.EXPENSE].remove(expense)
     else:
-        ctx.session_additions["expenses"].append(expense)
+        ctx.session_additions[ctx.entry.EXPENSE].append(expense)
 
 
 def delete_expense(expense_id, ctx):
     expense = session.query(Expense).filter_by(id=expense_id).first()
     if expense:
         session.delete(expense)
+        expense.account.balance += expense.amount
         session.flush()
-        if expense in ctx.session_additions["expenses"]:
-            ctx.session_additions["expenses"].remove(expense)
+        if expense in ctx.session_additions[ctx.entry.EXPENSE]:
+            ctx.session_additions[ctx.entry.EXPENSE].remove(expense)
         else:
-            ctx.session_deletions["expenses"].append(expense)
+            ctx.session_deletions[ctx.entry.EXPENSE].append(expense)
     else:
         logger.error(f"Expense with ID {expense_id} does not exist")
 
@@ -68,10 +72,10 @@ def add_category(name, ctx):
     category = ExpenseCategory(name=name)
     session.add(category)
     session.flush()
-    if category in ctx.session_deletions["categorys"]:
-        ctx.session_deletions["categorys"].remove(category)
+    if category in ctx.session_deletions[ctx.entry.CATEGORY]:
+        ctx.session_deletions[ctx.entry.CATEGORY].remove(category)
     else:
-        ctx.session_additions["categorys"].append(category)
+        ctx.session_additions[ctx.entry.CATEGORY].append(category)
 
 
 def delete_category(category_id, ctx):
@@ -79,10 +83,10 @@ def delete_category(category_id, ctx):
     if category:
         session.delete(category)
         session.flush()
-        if category in ctx.session_additions["categorys"]:
-            ctx.session_additions["categorys"].remove(category)
+        if category in ctx.session_additions[ctx.entry.CATEGORY]:
+            ctx.session_additions[ctx.entry.CATEGORY].remove(category)
         else:
-            ctx.session_deletions["categorys"].append(category)
+            ctx.session_deletions[ctx.entry.CATEGORY].append(category)
     else:
         logger.error(f"Category with ID {category_id} does not exist")
 
@@ -104,22 +108,24 @@ def add_income(date, amount, source_id, account_id, notes, ctx):
         notes=notes,
     )
     session.add(income)
+    income.account.balance += amount
     session.flush()
-    if income in ctx.session_deletions["incomes"]:
-        ctx.session_deletions["incomes"].remove(income)
+    if income in ctx.session_deletions[ctx.entry.INCOME]:
+        ctx.session_deletions[ctx.entry.INCOME].remove(income)
     else:
-        ctx.session_additions["incomes"].append(income)
+        ctx.session_additions[ctx.entry.INCOME].append(income)
 
 
 def delete_income(income_id, ctx):
     income = session.query(Income).filter_by(id=income_id).first()
     if income:
         session.delete(income)
+        income.account.balance -= income.amount
         session.flush()
-        if income in ctx.session_additions["incomes"]:
-            ctx.session_additions["incomes"].remove(income)
+        if income in ctx.session_additions[ctx.entry.INCOME]:
+            ctx.session_additions[ctx.entry.INCOME].remove(income)
         else:
-            ctx.session_deletions["incomes"].append(income)
+            ctx.session_deletions[ctx.entry.INCOME].append(income)
     else:
         logger.error(f"Income with ID {income_id} does not exist")
 
@@ -136,37 +142,37 @@ def get_incomes(start_date, end_date):
     )
 
 
-def add_income_source(name, ctx):
+def add_source(name, ctx):
     if session.query(IncomeSource).filter_by(name=name).first():
         logger.error(f"Income source {name} already exists")
         return
     source = IncomeSource(name=name)
     session.add(source)
     session.flush()
-    if source in ctx.session_deletions["sources"]:
-        ctx.session_deletions["sources"].remove(source)
+    if source in ctx.session_deletions[ctx.entry.SOURCE]:
+        ctx.session_deletions[ctx.entry.SOURCE].remove(source)
     else:
-        ctx.session_additions["sources"].append(source)
+        ctx.session_additions[ctx.entry.SOURCE].append(source)
 
 
-def delete_income_source(source_id, ctx):
+def delete_source(source_id, ctx):
     source = session.query(IncomeSource).filter_by(id=source_id).first()
     if source:
         session.delete(source)
         session.flush()
-        if source in ctx.session_additions["sources"]:
-            ctx.session_additions["sources"].remove(source)
+        if source in ctx.session_additions[ctx.entry.SOURCE]:
+            ctx.session_additions[ctx.entry.SOURCE].remove(source)
         else:
-            ctx.session_deletions["sources"].append(source)
+            ctx.session_deletions[ctx.entry.SOURCE].append(source)
     else:
         logger.error(f"Income source with ID {source_id} does not exist")
 
 
-def get_income_source(source_id):
+def get_source(source_id):
     return session.query(IncomeSource).filter_by(id=source_id).first()
 
 
-def get_income_sources():
+def get_sources():
     return session.query(IncomeSource).all()
 
 
@@ -177,10 +183,10 @@ def add_account(name, ctx, balance=Decimal(0)):
     account = Account(name=name, balance=balance)
     session.add(account)
     session.flush()
-    if account in ctx.session_deletions["accounts"]:
-        ctx.session_deletions["accounts"].remove(account)
+    if account in ctx.session_deletions[ctx.entry.ACCOUNT]:
+        ctx.session_deletions[ctx.entry.ACCOUNT].remove(account)
     else:
-        ctx.session_additions["accounts"].append(account)
+        ctx.session_additions[ctx.entry.ACCOUNT].append(account)
 
 
 def delete_account(account_id, ctx):
@@ -188,10 +194,10 @@ def delete_account(account_id, ctx):
     if account:
         session.delete(account)
         session.flush()
-        if account in ctx.session_additions["accounts"]:
-            ctx.session_additions["accounts"].remove(account)
+        if account in ctx.session_additions[ctx.entry.ACCOUNT]:
+            ctx.session_additions[ctx.entry.ACCOUNT].remove(account)
         else:
-            ctx.session_deletions["accounts"].append(account)
+            ctx.session_deletions[ctx.entry.ACCOUNT].append(account)
     else:
         logger.error(f"Account with ID {account_id} does not exist")
 
@@ -213,19 +219,19 @@ def add_person(name, ctx, balance=Decimal(0)):
     if not session.query(ExpenseCategory).filter_by(name=name).first():
         category = ExpenseCategory(name=name)
         session.add(category)
-        if category in ctx.session_deletions["categorys"]:
-            ctx.session_deletions["categorys"].remove(category)
+        if category in ctx.session_deletions[ctx.entry.CATEGORY]:
+            ctx.session_deletions[ctx.entry.CATEGORY].remove(category)
         else:
-            ctx.session_additions["categorys"].append(category)
+            ctx.session_additions[ctx.entry.CATEGORY].append(category)
 
     source = session.query(IncomeSource).filter_by(name=name).first()
     if not session.query(IncomeSource).filter_by(name=name).first():
         source = IncomeSource(name=name)
         session.add(source)
-        if source in ctx.session_deletions["sources"]:
-            ctx.session_deletions["sources"].remove(source)
+        if source in ctx.session_deletions[ctx.entry.SOURCE]:
+            ctx.session_deletions[ctx.entry.SOURCE].remove(source)
         else:
-            ctx.session_additions["sources"].append(source)
+            ctx.session_additions[ctx.entry.SOURCE].append(source)
 
     session.flush()
     if category and source:
@@ -234,10 +240,10 @@ def add_person(name, ctx, balance=Decimal(0)):
         )
         session.add(person)
         session.flush()
-        if person in ctx.session_deletions["persons"]:
-            ctx.session_deletions["persons"].remove(person)
+        if person in ctx.session_deletions[ctx.entry.PERSON]:
+            ctx.session_deletions[ctx.entry.PERSON].remove(person)
         else:
-            ctx.session_additions["persons"].append(person)
+            ctx.session_additions[ctx.entry.PERSON].append(person)
 
 
 def delete_person(person_id, ctx):
@@ -245,19 +251,19 @@ def delete_person(person_id, ctx):
     if person:
 
         session.delete(person)
-        ctx.session_deletions["persons"].append(person)
-        if person in ctx.session_additions["persons"]:
-            ctx.session_additions["persons"].remove(person)
+        ctx.session_deletions[ctx.entry.PERSON].append(person)
+        if person in ctx.session_additions[ctx.entry.PERSON]:
+            ctx.session_additions[ctx.entry.PERSON].remove(person)
 
         category = session.query(ExpenseCategory).filter_by(id=person.debit_id).first()
-        if category in ctx.session_additions["categorys"]:
+        if category in ctx.session_additions[ctx.entry.CATEGORY]:
             session.delete(category)
-            ctx.session_additions["categorys"].remove(category)
+            ctx.session_additions[ctx.entry.CATEGORY].remove(category)
 
         source = session.query(IncomeSource).filter_by(id=person.credit_id).first()
-        if source in ctx.session_additions["sources"]:
+        if source in ctx.session_additions[ctx.entry.SOURCE]:
             session.delete(source)
-            ctx.session_additions["sources"].remove(source)
+            ctx.session_additions[ctx.entry.SOURCE].remove(source)
 
         session.flush()
     else:
@@ -272,21 +278,26 @@ def get_persons():
     return session.query(Person).all()
 
 
-def commit_changes():
+# TODO: figure out logging situation
+
+
+def commit_changes(ctx):
     try:
         session.commit()
-        logger.info("All changes have been committed successfully.")
+        ctx.clear_session()
+        # logger.info("All changes have been committed successfully.")
     except Exception as e:
         session.rollback()
-        logger.error(f"An error occurred during commit: {e}")
+        raise RuntimeError(f"An error occurred during commit: {e}")
 
 
-def rollback_changes():
+def rollback_changes(ctx):
     try:
         session.rollback()
-        logger.info("All uncommitted changes have been rolled back.")
+        ctx.clear_session()
+        # logger.info("All uncommitted changes have been rolled back.")
     except Exception as e:
-        logger.error(f"An error occurred during rollback: {e}")
+        raise RuntimeError(f"An error occurred during rollback: {e}")
 
 
 # @event.listens_for(Income, "after_insert")

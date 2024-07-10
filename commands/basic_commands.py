@@ -3,6 +3,7 @@ import sys, subprocess
 from commands import Command, CommandRegistry
 from utils import utils
 from utils.logger import BasicFormatter, cli_logger
+from database import actions
 
 
 logger = logging.getLogger(__name__)
@@ -28,41 +29,47 @@ class Clear(Command):
         return
 
 
-class Entry(Command):
-    def __init__(self):
-        super().__init__(
-            ["entry"],
-            "add a new entry (if no command is passed new entry is assumed)",
-        )
-
-    def run(self, args, ctx=None):
-        if not utils.valid_num_of_args(args, 4, "entry:"):
-            return
-        else:
-            print(utils.valid_entry(args, ctx))
-
-
 class Commit(Command):
     def __init__(self):
         super().__init__(["commit"], "comit the current session to the database")
 
     def run(self, args, ctx):
-        ctx.cli.execute(["ls"])
-        answer = input(
-            "Are you sure you want to comit the session to the database? (Y/n): "
-        )
-        if answer in ["n", "N"]:
-            return
-        print("Comitting session to database...")
-        ctx.session.commit()
-        cli_logger.info("Session comitted to database.")
-        return
+        try:
+            ctx.cli.execute(["ls"])
+            answer = input(
+                "\033[0;33mAre you sure you want to comit the session to the database? (Y/n): \033[0m"
+            )
+            if answer in ["n", "N"]:
+                return
+            print("Comitting session to database...")
+            actions.commit_changes(ctx)
+            logger.info("All changes have been committed successfully.")
+        except Exception as e:
+            logger.error(e)
+
+
+class Rollback(Command):
+    def __init__(self):
+        super().__init__(["rollback"], "rollback the current session")
+
+    def run(self, args, ctx):
+        try:
+            ctx.cli.execute(["ls"])
+            answer = input(
+                "\033[0;33mAre you sure you want to rollback the session? (Y/n): \033[0m"
+            )
+            if answer in ["n", "N"]:
+                return
+            print("Rolling back changes...")
+            actions.rollback_changes(ctx)
+            cli_logger.info("All uncommitted changes have been rolled back.")
+        except Exception as e:
+            logger.error(e)
 
 
 basic_local_registery = CommandRegistry()
 basic_local_registery.register_command(Exit())
 basic_local_registery.register_command(Clear())
-basic_local_registery.register_command(Entry())
 basic_local_registery.register_command(Commit())
 
 

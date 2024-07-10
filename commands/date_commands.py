@@ -1,14 +1,22 @@
+import logging
 from commands import Command, CommandRegistry
 import datetime
 from utils import utils
+from utils.logger import BasicFormatter, cli_logger
+
+
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter(BasicFormatter())
+logger.addHandler(handler)
 
 
 def date_changed(ctx):
-    utils.green(f"Date changed : {ctx.current_date} | {ctx.weekday}")
+    cli_logger.info(f"Date changed : {ctx.current_date} | {ctx.current_week.weekday}")
 
 
 def date_not_changed(ctx):
-    print(f"Current date : {ctx.current_date} | {ctx.weekday}")
+    print(f"Current date : {ctx.current_date} | {ctx.current_week.weekday}")
 
 
 class Date(Command):
@@ -27,7 +35,7 @@ class Date(Command):
             ctx.new_date(utils.get_date(args[0], ctx.today))
             date_changed(ctx)
         else:
-            utils.error("invalid date")
+            cli_logger.info("invalid date")
             date_not_changed(ctx)
 
 
@@ -85,7 +93,7 @@ class Last(Command):
             ctx.new_date(ctx.today - datetime.timedelta(days=days_since))
             date_changed(ctx)
         else:
-            utils.error("invalid date:", f"'{args[0]}' is not a valid weekday")
+            logger.error("invalid date:", f"'{args[0]}' is not a valid weekday")
 
 
 class Next(Command):
@@ -95,7 +103,7 @@ class Next(Command):
         )
 
     def run(self, args, ctx):
-        if not utils.valid_num_of_args(args, 1, "invalid date:", "no weekday provided"):
+        if not utils.valid_num_of_args(args, 1, "no weekday provided"):
             date_not_changed(ctx)
             return
         if args[0] in ctx.dayweeks.keys():
@@ -106,7 +114,7 @@ class Next(Command):
             ctx.new_date(ctx.today + datetime.timedelta(days=days_till))
             date_changed(ctx)
         else:
-            utils.error("invalid date:", f"'{args[0]}' is not a valid weekday")
+            logger.error("invalid date:", f"'{args[0]}' is not a valid weekday")
 
 
 date = Date()

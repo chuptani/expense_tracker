@@ -30,7 +30,7 @@ def is_date(string, date_formats):
             datetime.datetime.strptime(string, date_format)
             return True
         except ValueError:
-            continue
+            pass
     return False
 
 
@@ -43,6 +43,7 @@ def get_date(date, today):
         return datetime.datetime.strptime(
             f"{today.year}-{today.month}-{date}", "%Y-%m-%d"
         ).date()
+    raise ValueError(f"date format not recognized: '{date}'")
 
 
 def is_prefix(prefix, full_string):
@@ -54,3 +55,8 @@ def get_prefixes(s):
     for i in range(len(s), 0, -1):
         prefixes.append(s[:i])
     return prefixes
+
+
+if __name__ == "__main__":
+    for alias in get_prefixes("hello"):
+        print(alias)
