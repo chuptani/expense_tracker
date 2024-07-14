@@ -1,5 +1,6 @@
 import datetime
 import calendar
+from database import actions
 from enum import Enum, auto
 
 
@@ -10,6 +11,7 @@ class Entry(Enum):
     SOURCE = auto()
     ACCOUNT = auto()
     PERSON = auto()
+    PERSON_TRANSACTION = auto()
 
 
 class Week:

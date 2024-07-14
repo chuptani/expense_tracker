@@ -1,0 +1,443 @@
+[
+  {
+    "date": "2024-01-01",
+    "amount": 45.30,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Weekly food supplies"
+  },
+  {
+    "date": "2024-01-05",
+    "amount": 125.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Electricity bill"
+  },
+  {
+    "date": "2024-01-09",
+    "amount": 800.00,
+    "account": "card",
+    "category": "Rent/Mortgage",
+    "notes": "Monthly rent payment"
+  },
+  {
+    "date": "2024-01-12",
+    "amount": 60.00,
+    "account": "cash",
+    "category": "Transportation",
+    "notes": "Gas for car"
+  },
+  {
+    "date": "2024-01-15",
+    "amount": 30.25,
+    "account": "card",
+    "category": "Dining Out",
+    "notes": "Dinner with friends"
+  },
+  {
+    "date": "2024-01-19",
+    "amount": 12.00,
+    "account": "cash",
+    "category": "Entertainment",
+    "notes": "Movie ticket"
+  },
+  {
+    "date": "2024-01-22",
+    "amount": 20.00,
+    "account": "card",
+    "category": "Healthcare",
+    "notes": "Prescription meds"
+  },
+  {
+    "date": "2024-01-26",
+    "amount": 250.00,
+    "account": "cash",
+    "category": "Insurance",
+    "notes": "Car insurance payment"
+  },
+  {
+    "date": "2024-01-29",
+    "amount": 400.00,
+    "account": "card",
+    "category": "Education",
+    "notes": "Tuition fee"
+  },
+  {
+    "date": "2024-02-02",
+    "amount": 75.50,
+    "account": "cash",
+    "category": "Clothing",
+    "notes": "New work attire"
+  },
+  {
+    "date": "2024-02-05",
+    "amount": 15.00,
+    "account": "card",
+    "category": "Groceries",
+    "notes": "Snacks and drinks"
+  },
+  {
+    "date": "2024-02-08",
+    "amount": 55.00,
+    "account": "cash",
+    "category": "Utilities",
+    "notes": "Water bill"
+  },
+  {
+    "date": "2024-02-11",
+    "amount": 45.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Monthly public transit pass"
+  },
+  {
+    "date": "2024-02-14",
+    "amount": 22.50,
+    "account": "cash",
+    "category": "Dining Out",
+    "notes": "Lunch at a cafe"
+  },
+  {
+    "date": "2024-02-17",
+    "amount": 18.00,
+    "account": "card",
+    "category": "Entertainment",
+    "notes": "Streaming service subscription"
+  },
+  {
+    "date": "2024-02-20",
+    "amount": 35.00,
+    "account": "cash",
+    "category": "Healthcare",
+    "notes": "Dental check-up"
+  },
+  {
+    "date": "2024-02-23",
+    "amount": 90.00,
+    "account": "card",
+    "category": "Insurance",
+    "notes": "Health insurance payment"
+  },
+  {
+    "date": "2024-02-26",
+    "amount": 200.00,
+    "account": "cash",
+    "category": "Education",
+    "notes": "Books and materials"
+  },
+  {
+    "date": "2024-03-01",
+    "amount": 50.00,
+    "account": "card",
+    "category": "Clothing",
+    "notes": "New shoes"
+  },
+  {
+    "date": "2024-03-04",
+    "amount": 7.00,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Bread and milk"
+  },
+  {
+    "date": "2024-03-07",
+    "amount": 130.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Heating bill"
+  },
+  {
+    "date": "2024-03-10",
+    "amount": 850.00,
+    "account": "cash",
+    "category": "Rent/Mortgage",
+    "notes": "Rent for the month"
+  },
+  {
+    "date": "2024-03-13",
+    "amount": 70.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Car maintenance"
+  },
+  {
+    "date": "2024-03-16",
+    "amount": 25.00,
+    "account": "cash",
+    "category": "Dining Out",
+    "notes": "Office lunch"
+  },
+  {
+    "date": "2024-03-19",
+    "amount": 14.00,
+    "account": "card",
+    "category": "Entertainment",
+    "notes": "Book purchase"
+  },
+  {
+    "date": "2024-03-22",
+    "amount": 60.00,
+    "account": "cash",
+    "category": "Healthcare",
+    "notes": "Vitamins and supplements"
+  },
+  {
+    "date": "2024-03-25",
+    "amount": 110.00,
+    "account": "card",
+    "category": "Insurance",
+    "notes": "Life insurance premium"
+  },
+  {
+    "date": "2024-03-28",
+    "amount": 300.00,
+    "account": "cash",
+    "category": "Education",
+    "notes": "Online course enrollment"
+  },
+  {
+    "date": "2024-03-31",
+    "amount": 80.00,
+    "account": "card",
+    "category": "Clothing",
+    "notes": "Winter jacket"
+  },
+  {
+    "date": "2024-04-03",
+    "amount": 10.00,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Late night snacks"
+  },
+  {
+    "date": "2024-04-06",
+    "amount": 140.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Internet and cable package"
+  },
+  {
+    "date": "2024-04-09",
+    "amount": 900.00,
+    "account": "cash",
+    "category": "Rent/Mortgage",
+    "notes": "Monthly mortgage payment"
+  },
+  {
+    "date": "2024-04-12",
+    "amount": 65.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Parking fees for the month"
+  },
+  {
+    "date": "2024-04-15",
+    "amount": 20.00,
+    "account": "cash",
+    "category": "Dining Out",
+    "notes": "Breakfast meeting"
+  },
+  {
+    "date": "2024-04-18",
+    "amount": 50.00,
+    "account": "card",
+    "category": "Entertainment",
+    "notes": "Concert tickets"
+  },
+  {
+    "date": "2024-04-21",
+    "amount": 25.00,
+    "account": "cash",
+    "category": "Healthcare",
+    "notes": "First aid supplies"
+  },
+  {
+    "date": "2024-04-24",
+    "amount": 100.00,
+    "account": "card",
+    "category": "Insurance",
+    "notes": "Home insurance payment"
+  },
+  {
+    "date": "2024-04-27",
+    "amount": 450.00,
+    "account": "cash",
+    "category": "Education",
+    "notes": "Semester fees"
+  },
+  {
+    "date": "2024-04-30",
+    "amount": 90.00,
+    "account": "card",
+    "category": "Clothing",
+    "notes": "Formal wear for event"
+  },
+  {
+    "date": "2024-05-03",
+    "amount": 8.50,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Organic produce"
+  },
+  {
+    "date": "2024-05-06",
+    "amount": 135.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Monthly mobile phone bill"
+  },
+  {
+    "date": "2024-05-09",
+    "amount": 750.00,
+    "account": "cash",
+    "category": "Rent/Mortgage",
+    "notes": "Rent for downtown apartment"
+  },
+  {
+    "date": "2024-05-12",
+    "amount": 55.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Uber rides for the week"
+  },
+  {
+    "date": "2024-05-15",
+    "amount": 40.00,
+    "account": "cash",
+    "category": "Dining Out",
+    "notes": "Family dinner night"
+  },
+  {
+    "date": "2024-05-18",
+    "amount": 16.00,
+    "account": "card",
+    "category": "Entertainment",
+    "notes": "Video game purchase"
+  },
+  {
+    "date": "2024-05-21",
+    "amount": 45.00,
+    "account": "cash",
+    "category": "Healthcare",
+    "notes": "Gym membership"
+  },
+  {
+    "date": "2024-05-24",
+    "amount": 120.00,
+    "account": "card",
+    "category": "Insurance",
+    "notes": "Auto insurance renewal"
+  },
+  {
+    "date": "2024-05-27",
+    "amount": 350.00,
+    "account": "cash",
+    "category": "Education",
+    "notes": "Language class fees"
+  },
+  {
+    "date": "2024-05-30",
+    "amount": 65.00,
+    "account": "card",
+    "category": "Clothing",
+    "notes": "Summer wardrobe update"
+  },
+  {
+    "date": "2024-06-02",
+    "amount": 9.75,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Coffee and tea supplies"
+  },
+  {
+    "date": "2024-06-05",
+    "amount": 145.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Garbage and recycling services"
+  },
+  {
+    "date": "2024-06-08",
+    "amount": 750.00,
+    "account": "cash",
+    "category": "Rent/Mortgage",
+    "notes": "Rent for downtown apartment"
+  },
+  {
+    "date": "2024-06-11",
+    "amount": 55.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Uber rides for the week"
+  },
+  {
+    "date": "2024-06-14",
+    "amount": 40.00,
+    "account": "cash",
+    "category": "Dining Out",
+    "notes": "Family dinner night"
+  },
+  {
+    "date": "2024-06-17",
+    "amount": 16.00,
+    "account": "card",
+    "category": "Entertainment",
+    "notes": "Video game purchase"
+  },
+  {
+    "date": "2024-06-20",
+    "amount": 45.00,
+    "account": "cash",
+    "category": "Healthcare",
+    "notes": "Gym membership"
+  },
+  {
+    "date": "2024-06-23",
+    "amount": 120.00,
+    "account": "card",
+    "category": "Insurance",
+    "notes": "Auto insurance renewal"
+  },
+  {
+    "date": "2024-06-26",
+    "amount": 350.00,
+    "account": "cash",
+    "category": "Education",
+    "notes": "Language class fees"
+  },
+  {
+    "date": "2024-06-29",
+    "amount": 65.00,
+    "account": "card",
+    "category": "Clothing",
+    "notes": "Summer wardrobe update"
+  },
+  {
+    "date": "2024-07-02",
+    "amount": 9.75,
+    "account": "cash",
+    "category": "Groceries",
+    "notes": "Coffee and tea supplies"
+  },
+  {
+    "date": "2024-07-05",
+    "amount": 145.00,
+    "account": "card",
+    "category": "Utilities",
+    "notes": "Garbage and recycling services"
+  },
+  {
+    "date": "2024-07-08",
+    "amount": 750.00,
+    "account": "cash",
+    "category": "Rent/Mortgage",
+    "notes": "Rent for downtown apartment"
+  },
+  {
+    "date": "2024-07-12",
+    "amount": 55.00,
+    "account": "card",
+    "category": "Transportation",
+    "notes": "Uber rides for the week"
+  }
+]

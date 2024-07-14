@@ -1,7 +1,8 @@
 import datetime
+from enum import Enum as PyEnum
 from decimal import Decimal
 
-from sqlalchemy import Numeric
+from sqlalchemy import Numeric, Enum
 
 from sqlalchemy import create_engine, String, ForeignKey, select, func
 from sqlalchemy.orm import (
@@ -98,20 +99,36 @@ class Person(Base):
     __tablename__ = "persons"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    debit_id: Mapped[int] = mapped_column(
-        ForeignKey("expense_categories.id"), nullable=False
-    )
-    credit_id: Mapped[int] = mapped_column(
-        ForeignKey("income_sources.id"), nullable=False
-    )
     balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
-    debit: Mapped["ExpenseCategory"] = relationship()
-    credit: Mapped["IncomeSource"] = relationship()
+    transactions: Mapped[list["PersonTransaction"]] = relationship(
+        back_populates="person"
+    )
+
+    def __repr__(self) -> str:
+        return f"<Person(id={self.id}, name='{self.name}', balance={self.balance})>"
+
+
+class TransactionType(str, PyEnum):
+    DEBIT = "debit"
+    CREDIT = "credit"
+
+
+class PersonTransaction(Base):
+    __tablename__ = "person_transactions"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[datetime.date] = mapped_column(nullable=False)
+    amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    person_id: Mapped[int] = mapped_column(ForeignKey("persons.id"), nullable=False)
+    transaction_type: Mapped[TransactionType] = mapped_column(
+        Enum(TransactionType), nullable=False
+    )
+    notes: Mapped[str]
+    person: Mapped["Person"] = relationship(back_populates="transactions")
 
     def __repr__(self) -> str:
         return (
-            f"<Person(id={self.id}, name='{self.name}', "
-            f"debit_id={self.debit_id}, credit_id={self.credit_id}, balance={self.balance})>"
+            f"<PersonTransaction(id={self.id}, date={self.date}, amount={self.amount:.2f}, "
+            f"person_id={self.person_id}, transaction_type={self.transaction_type}, notes={self.notes})>"
         )
 
 

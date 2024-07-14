@@ -1,0 +1,72 @@
+[
+  {
+    "date": "2024-01-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-02-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-03-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-04-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-05-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-06-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-07-01",
+    "amount": 3200.00,
+    "account": "card",
+    "source": "Work",
+    "notes": "Salary"
+  },
+  {
+    "date": "2024-03-15",
+    "amount": 150.00,
+    "account": "cash",
+    "source": "Freelancing",
+    "notes": "Article writing"
+  },
+  {
+    "date": "2024-05-20",
+    "amount": 500.00,
+    "account": "card",
+    "source": "Investment",
+    "notes": "Dividend payout"
+  },
+  {
+    "date": "2024-06-25",
+    "amount": 250.00,
+    "account": "cash",
+    "source": "Gift",
+    "notes": "Birthday gift"
+  }
+]

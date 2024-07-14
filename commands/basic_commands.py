@@ -37,7 +37,7 @@ class Commit(Command):
         try:
             ctx.cli.execute(["ls"])
             answer = input(
-                "\033[0;33mAre you sure you want to comit the session to the database? (Y/n): \033[0m"
+                "\033[0;33mAre you sure you want to comit these changes? (Y/n): \033[0m"
             )
             if answer in ["n", "N"]:
                 return
@@ -56,21 +56,33 @@ class Rollback(Command):
         try:
             ctx.cli.execute(["ls"])
             answer = input(
-                "\033[0;33mAre you sure you want to rollback the session? (Y/n): \033[0m"
+                "\033[0;33mAre you sure you want to rollback these changes? (Y/n): \033[0m"
             )
             if answer in ["n", "N"]:
                 return
             print("Rolling back changes...")
             actions.rollback_changes(ctx)
-            cli_logger.info("All uncommitted changes have been rolled back.")
+            cli_logger.info("All uncommitted changes have been rolled back")
         except Exception as e:
             logger.error(e)
+
+
+class DirectAddPersonTransaction(Command):
+    def __init__(self):
+        super().__init__(
+            ["person_transaction", "ptr", "pt"],
+            "add a new person transaction",
+        )
+
+    def run(self, args, ctx):
+        ctx.cli.execute(["add", "person_transaction", *args], ctx)
 
 
 basic_local_registery = CommandRegistry()
 basic_local_registery.register_command(Exit())
 basic_local_registery.register_command(Clear())
 basic_local_registery.register_command(Commit())
+basic_local_registery.register_command(Rollback())
 
 
 def main():

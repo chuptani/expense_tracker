@@ -1,9 +1,16 @@
 import re
 from decimal import Decimal
-from utils.logger import cli_logger
+from utils.logger import green, red
 from database import actions
 from utils.utils import is_number
-from database.models import session, ExpenseCategory, Account, IncomeSource
+from database.models import (
+    session,
+    ExpenseCategory,
+    Account,
+    IncomeSource,
+    TransactionType,
+    Person,
+)
 
 
 def validate_amount_string(amount):
@@ -20,7 +27,6 @@ def validate_account_string(account):
         if query_account:
             return query_account.id
     else:
-        cli_logger.error(f"'{account}' is not a valid account")
         raise ValueError("Invalid account")
 
 
@@ -29,7 +35,6 @@ def validate_category_string(category):
     if query_category:
         return query_category.id
     else:
-        cli_logger.error(f"'{category}' category does not exist.")
         raise ValueError("Invalid category")
 
 
@@ -38,7 +43,6 @@ def validate_source_string(source):
     if query_source:
         return query_source.id
     else:
-        cli_logger.error(f"'{source}' source does not exist.")
         raise ValueError("Invalid source")
 
 
@@ -70,23 +74,58 @@ def validate_income_string(input_string, ctx):
     ]
 
 
-def entry_type(input_string):
+def entry_type(input_string, ctx=None):
     amount = input_string[0]
     if not re.match(r"^[+-]?\d+(\.\d+)?$", amount):
         raise ValueError("Invalid entry")
-    if is_number(amount[0]) or amount[0] == "-":
-        return "expense"
-    return "income"
+    if ctx:
+        if is_number(amount[0]) or amount[0] == "-":
+            return ctx.entry.EXPENSE
+        return ctx.entry.INCOME
+    else:
+        return True
 
 
 def validate_entry_string(input_string, ctx):
-    entry = entry_type(input_string)
-    if entry == "expense":
+    entry = entry_type(input_string, ctx)
+    if entry == ctx.entry.EXPENSE:
         return entry, validate_expense_string(input_string, ctx)
     return entry, validate_income_string(input_string, ctx)
 
 
+def validate_person_string(name):
+    name = name.lower().capitalize()
+    person = session.query(Person).filter_by(name=name).first()
+    if person:
+        return person.id
+    raise ValueError("Invalid person")
+
+
+def validate_person_transaction_string(input_string, ctx):
+    entry = entry_type(input_string, ctx)
+    transaction_type = (
+        TransactionType.DEBIT if entry == ctx.entry.EXPENSE else TransactionType.CREDIT
+    )
+    amount = abs(validate_amount_string(input_string[0]))
+    person_id = validate_person_string(input_string[1])
+    notes = input_string[2]
+    return [
+        ctx.current_date,
+        amount,
+        person_id,
+        transaction_type,
+        notes,
+    ]
+
+
+def validate_balance_string(input_string):
+    if is_number(input_string):
+        return Decimal(input_string)
+    raise ValueError("Invalid balance")
+
+
 def fix_account(account):
+    red(f"'{account}' is not a valid account")
     while True:
         account = input("Is the transaction ca[s]h or ca[r]d? : ").lower()
         if account == "":
@@ -100,12 +139,13 @@ def fix_account(account):
         elif account in ["cash", "card"]:
             break
         else:
-            cli_logger.error(f"'{account}' is not a valid account")
-    cli_logger.info(f"Account set to '{account}'")
+            red(f"'{account}' is not a valid account")
+    green(f"Account set to '{account}'")
     return account
 
 
 def fix_category(category, ctx):
+    red(f"'{category}' does not exist.")
     while True:
         if category and input("Create it? [Y/n] ") in [
             "y",
@@ -113,7 +153,7 @@ def fix_category(category, ctx):
             "",
         ]:
             actions.add_category(category, ctx)
-            cli_logger.info(f"New category created : '{category}'")
+            green(f"New category created : '{category}'")
             break
         print()
         categories = [cat.name for cat in session.query(ExpenseCategory).all()]
@@ -125,33 +165,34 @@ def fix_category(category, ctx):
         if category == "":
             continue
         if category in categories:
-            cli_logger.info(f"Category set to '{category}'")
+            green(f"Category set to '{category}'")
             break
-        cli_logger.error(f"'{category}' category does not exist.")
+        red(f"category '{category}' does not exist.")
     return category
 
 
 def fix_source(source, ctx):
+    red(f"source '{source}' does not exist.")
     while True:
         if source and input("Create it? [Y/n] ") in [
             "y",
             "Y",
             "",
         ]:
-            actions.add_income_source(source, ctx)
-            cli_logger.info(f"New source created : '{source}'")
+            actions.add_source(source, ctx)
+            green(f"New source created : '{source}'")
             break
-        sources = [sou.name for sou in session.query(IncomeSource).all()]
+        sources = [src.name for src in session.query(IncomeSource).all()]
         print()
         print("Available income sources:")
-        for sou in sources:
-            print(f"- {sou}")
+        for src in sources:
+            print(f"- {src}")
         print()
         source = input("Enter a source: ")
         if source == "":
             continue
         if source in sources:
-            cli_logger.info(f"source set to '{source}'")
+            green(f"source set to '{source}'")
             break
-        cli_logger.error(f"'{source}' source does not exist.")
+        red(f"source '{source}' does not exist.")
     return source

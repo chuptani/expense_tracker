@@ -4,11 +4,13 @@ from commands.basic_commands import basic_local_registery
 from commands.date_commands import date_local_registery
 from commands.add_commands import add_local_registery
 from commands.list_commands import list_local_registery
-from commands.get_commands import get_local_register
+from commands.get_commands import get_local_registry
+from commands.delete_commands import delete_local_registry
 
 package_registry = CommandRegistry()
 package_registry.register_registery(basic_local_registery)
 package_registry.register_registery(date_local_registery)
 package_registry.register_registery(add_local_registery)
 package_registry.register_registery(list_local_registery)
-package_registry.register_registery(get_local_register)
+package_registry.register_registery(get_local_registry)
+package_registry.register_registery(delete_local_registry)

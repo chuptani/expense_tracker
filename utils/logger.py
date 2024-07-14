@@ -7,7 +7,7 @@ class BasicFormatter(logging.Formatter):
         logging.INFO: "\033[0;32m",  # Green
         logging.WARNING: "\033[0;33m",  # Yellow
         logging.ERROR: "\033[0;31m",  # Red
-        logging.CRITICAL: "\033[1;31m",  # Bright Red
+        logging.CRITICAL: "\033[1;31m",  # Red1
     }
     RESET = "\033[0m"
 
@@ -45,3 +45,9 @@ cli_logger.propagate = False
 handler = logging.StreamHandler()
 handler.setFormatter(CustomFormatter())
 cli_logger.addHandler(handler)
+
+cyan = cli_logger.debug
+green = cli_logger.info
+yellow = cli_logger.warning
+red = cli_logger.error
+bright_red = cli_logger.critical

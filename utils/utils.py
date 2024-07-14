@@ -13,13 +13,25 @@ def is_number(s):
         return False
 
 
-def valid_num_of_args(args, num, no_args="no args provided"):
+def if_args_get_arg(args, expected_args):
+    if len(args) > expected_args:
+        return args[expected_args]
+    return None
+
+
+def valid_num_of_args(
+    args,
+    num,
+    no_args="no arguments provided",
+    extra_args="too many arguments",
+    incomplete_args="incomplete arguments",
+):
     if num > 0 and not args:
         raise ValueError(no_args)
     elif len(args) > num:
-        raise ValueError("too many arguments")
+        raise ValueError(extra_args)
     elif len(args) < num:
-        raise ValueError("incomplete arguments")
+        raise ValueError(incomplete_args)
     else:
         return True
 

@@ -1,14 +1,13 @@
 import os
 import shlex
-import readline
 import logging
-
+import readline
+import datetime
 
 from context import Ctx
 import commands
-from commands import CommandRegistry
 from utils import validation
-from utils.logger import cli_logger, BasicFormatter
+from utils.logger import red
 from database.models import session
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -29,21 +28,16 @@ class RootFormatter(logging.Formatter):
         return formatter.format(record)
 
 
+log_name = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+log_path = f"logs/{log_name}.log"
 logging.basicConfig(level=logging.DEBUG, handlers=[])
 root_logger = logging.getLogger()
-file_handler = logging.FileHandler("log")
+file_handler = logging.FileHandler(log_path)
 file_handler.setFormatter(RootFormatter())
 root_logger.addHandler(file_handler)
 
-# TODO: create seperate logger to print to stdout
 
-# logger = logging.getLogger(__name__)
-# stream_handler = logging.StreamHandler()
-# stream_handler.setFormatter(BasicFormatter())
-# logger.addHandler(stream_handler)
-
-
-class cli_CommandRegistry(CommandRegistry):
+class cli_CommandRegistry(commands.CommandRegistry):
     def execute(self, args):
         if not args:
             return
@@ -56,8 +50,7 @@ class cli_CommandRegistry(CommandRegistry):
             if validation.entry_type(args):
                 return self.execute(["add", "entry"] + args)
         except ValueError:
-            pass
-        cli_logger.error(f"command '{command_name}' not found")
+            red(f"command '{command_name}' not found")
 
 
 class Cli:
@@ -100,15 +93,16 @@ class Cli:
                 break
             except KeyboardInterrupt:
                 print()
-                # print("\033[38;5;237m-\033[0m" * int(columns))
-                continue
             except ValueError as e:
-                pass
+                root_logger.error(e)
+                red(e)
             except NotImplementedError as e:
-                cli_logger.error(e)
+                root_logger.error(e)
+                red(e)
             except SQLAlchemyError as e:
                 session.rollback()
-                cli_logger.error(e)
+                root_logger.error(e)
+                red(e)
 
 
 if __name__ == "__main__":
