@@ -239,7 +239,6 @@ def get_sources():
 def add_account(name, ctx, balance=Decimal(0)):
     if session.query(Account).filter_by(name=name).first():
         raise ValueError(f"Account {name} already exists")
-        return
     account = Account(name=name, balance=balance)
     session.add(account)
     session.flush()
@@ -379,22 +378,23 @@ def get_person_transactions(start_date, end_date):
 
 def commit_changes(ctx):
     try:
-        session.commit()
-        logger.info("All changes have been committed successfully.")
-        all_changes = (
-            ctx.session_additions.values()
-            + ctx.session_deletions.values()
-            + ctx.session_updates.values()
-        )
-        logger.info(f"Total changes: {len(all_changes)}")
+        all_changes = [
+            item
+            for entry in ctx.entry
+            for item in (
+                ctx.session_additions.get(entry, [])
+                + ctx.session_deletions.get(entry, [])
+                + ctx.session_updates.get(entry, [])
+            )
+        ]
         for entry in all_changes:
             logger.info(entry)
-
+        logger.info(f"Total changes: {len(all_changes)}")
+        session.commit()
+        logger.info("All changes have been committed successfully.")
         ctx.clear_session()
     except Exception as e:
-        session.rollback()
         logger.error(f"An error occurred during commit: {e}")
-        logger.error("All changes have been rolled back.")
         raise RuntimeError(f"An error occurred during commit: {e}")
 
 

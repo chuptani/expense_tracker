@@ -36,6 +36,19 @@ class Expense(Base):
     category: Mapped["ExpenseCategory"] = relationship(back_populates="expenses")
     account: Mapped["Account"] = relationship(back_populates="expenses")
 
+    def get_attributes(self):
+        return ["id", "date", "amount", "account_id", "category_id", "notes"]
+
+    def get_dict(self):
+        return {
+            "id": self.id,
+            "date": self.date,
+            "amount": self.amount,
+            "account": self.account.name,
+            "category": self.category.name,
+            "notes": self.notes,
+        }
+
     def __repr__(self) -> str:
         return (
             f"<Expense(id={self.id}, date={self.date}, amount={self.amount:.2f}, "
@@ -48,6 +61,12 @@ class ExpenseCategory(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     expenses: Mapped[list["Expense"]] = relationship(back_populates="category")
+
+    def get_attributes(self):
+        return ["id", "name"]
+
+    def get_dict(self):
+        return {"id": self.id, "name": self.name}
 
     def __repr__(self) -> str:
         return f"<ExpenseCategory(id={self.id}, name='{self.name}')>"
@@ -66,6 +85,19 @@ class Income(Base):
     source: Mapped["IncomeSource"] = relationship(back_populates="incomes")
     account: Mapped["Account"] = relationship(back_populates="incomes")
 
+    def get_attributes(self):
+        return ["id", "date", "amount", "account_id", "source_id", "notes"]
+
+    def get_dict(self):
+        return {
+            "id": self.id,
+            "date": self.date,
+            "amount": self.amount,
+            "account": self.account.name,
+            "source": self.source.name,
+            "notes": self.notes,
+        }
+
     def __repr__(self) -> str:
         return (
             f"<Income(id={self.id}, date={self.date}, amount={self.amount:.2f}, "
@@ -79,6 +111,12 @@ class IncomeSource(Base):
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     incomes: Mapped[list["Income"]] = relationship(back_populates="source")
 
+    def get_attributes(self):
+        return ["id", "name"]
+
+    def get_dict(self):
+        return {"id": self.id, "name": self.name}
+
     def __repr__(self) -> str:
         return f"<IncomeSource(id={self.id}, name='{self.name}')>"
 
@@ -90,6 +128,12 @@ class Account(Base):
     balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     expenses: Mapped[list["Expense"]] = relationship(back_populates="account")
     incomes: Mapped[list["Income"]] = relationship(back_populates="account")
+
+    def get_attributes(self):
+        return ["id", "name", "balance"]
+
+    def get_dict(self):
+        return {"id": self.id, "name": self.name, "balance": self.balance}
 
     def __repr__(self) -> str:
         return f"<Account(id={self.id}, name='{self.name}', balance={self.balance})>"
@@ -103,6 +147,12 @@ class Person(Base):
     transactions: Mapped[list["PersonTransaction"]] = relationship(
         back_populates="person"
     )
+
+    def get_attributes(self):
+        return ["id", "name", "balance"]
+
+    def get_dict(self):
+        return {"id": self.id, "name": self.name, "balance": self.balance}
 
     def __repr__(self) -> str:
         return f"<Person(id={self.id}, name='{self.name}', balance={self.balance})>"
@@ -124,6 +174,26 @@ class PersonTransaction(Base):
     )
     notes: Mapped[str]
     person: Mapped["Person"] = relationship(back_populates="transactions")
+
+    def get_attributes(self):
+        return [
+            "id",
+            "date",
+            "amount",
+            "person_id",
+            "transaction_type",
+            "notes",
+        ]
+
+    def get_dict(self):
+        return {
+            "id": self.id,
+            "date": self.date,
+            "amount": self.amount,
+            "person": self.person.name,
+            "transaction_type": self.transaction_type,
+            "notes": self.notes,
+        }
 
     def __repr__(self) -> str:
         return (

@@ -1,12 +1,68 @@
 import logging
-from commands import Command, CommandRegistry
-from utils.logger import green, yellow, red
 
+from commands import Command, CommandRegistry
+from utils.tables import (
+    ExpensesTable,
+    CategoriesTable,
+    IncomesTable,
+    SourcesTable,
+    AccountsTable,
+    PersonsTable,
+    PersonTransactionsTable,
+)
+
+from rich.console import Console
+from rich.columns import Columns
+from rich.console import Group
+from rich.panel import Panel
+from rich.align import Align
 
 logger = logging.getLogger(__name__)
 
+console = Console()
 
-def print_thing(thing, ctx):
+
+def get_table(thing, ctx):
+    things = {
+        ctx.entry.EXPENSE: {"title": "Expenses", "table": ExpensesTable()},
+        ctx.entry.CATEGORY: {"title": "Categories", "table": CategoriesTable()},
+        ctx.entry.INCOME: {"title": "Incomes", "table": IncomesTable()},
+        ctx.entry.SOURCE: {"title": "Sources", "table": SourcesTable()},
+        ctx.entry.ACCOUNT: {"title": "Accounts", "table": AccountsTable()},
+        ctx.entry.PERSON: {"title": "Persons", "table": PersonsTable()},
+        ctx.entry.PERSON_TRANSACTION: {
+            "title": "Person Transactions",
+            "table": PersonTransactionsTable(),
+        },
+    }
+
+    thingfo = things[thing]
+    table = thingfo["table"]
+
+    if not any(
+        value
+        for value in ctx.session_additions[thing]
+        + ctx.session_deletions[thing]
+        + ctx.session_updates[thing]
+    ):
+        return Panel(
+            Align.center(f"[red]No {thingfo["title"]} to show"),
+            # padding=1,
+            title=f"{thingfo["title"]}",
+            expand=True,
+        )
+
+    for entry in ctx.session_additions[thing]:
+        table.add_entry(entry, "green")
+    for entry in ctx.session_deletions[thing]:
+        table.add_entry(entry, "red")
+    for entry in ctx.session_updates[thing]:
+        table.add_entry(entry, "yellow")
+
+    return Panel(Align.center(table), title=f"{thingfo["title"]}", expand=True)
+
+
+def old_print_thing(thing, ctx):
     things = {
         ctx.entry.EXPENSE: "Expenses",
         ctx.entry.CATEGORY: "Categories",
@@ -27,11 +83,11 @@ def print_thing(thing, ctx):
 
     print(things[thing] + ":")
     for expense in ctx.session_additions[thing]:
-        green(expense)
+        console.print("[green]" + str(expense))
     for expense in ctx.session_deletions[thing]:
-        red(expense)
+        console.print("[red]" + str(expense))
     for expense in ctx.session_updates[thing]:
-        yellow(expense)
+        console.print("[yellow]" + str(expense))
     return True
 
 
@@ -46,7 +102,7 @@ class List(Command):
             completed = []
             for arg in args:
                 if arg not in self.subcommands:
-                    red(f"invalid option {arg}")
+                    console.print(f"[red]invalid option: '{arg}'")
                     continue
                 if arg not in completed:
                     subcommand = self.subcommands[arg]
@@ -56,11 +112,15 @@ class List(Command):
             self.run(args, ctx)
 
     def run(self, args, ctx):
-        if not ctx.ADDITIONS and not ctx.DELETIONS and not ctx.UPDATES:
-            red("No changes to display")
-            return
-        for thing in ctx.entry:
-            print_thing(thing, ctx)
+        # for thing in ctx.entry:
+        #     old_print_thing(thing, ctx)
+        renderables = [get_table(thing, ctx) for thing in ctx.entry]
+        row_1 = Columns(renderables[:2], expand=True)
+        row_2 = Columns(renderables[3:1:-1], expand=True)
+        row_3 = Columns(renderables[4:5], expand=True)
+        row_4 = Columns(renderables[5:], expand=True)
+        group = Group(row_1, row_2, row_3, row_4)
+        console.print(Panel(group))
 
 
 class ListExpenses(Command):
@@ -68,9 +128,8 @@ class ListExpenses(Command):
         super().__init__(["expenses", "exp", "e"], "list all new expenses")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.EXPENSE, ctx):
-            print("Expenses:")
-            red("No new expenses to display")
+        table = get_table(ctx.entry.EXPENSE, ctx)
+        console.print(table)
 
 
 class ListCategories(Command):
@@ -78,9 +137,8 @@ class ListCategories(Command):
         super().__init__(["categories", "cat", "c"], "list all new categories")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.CATEGORY, ctx):
-            print("Categories:")
-            red("No new categories to display")
+        table = get_table(ctx.entry.CATEGORY, ctx)
+        console.print(table)
 
 
 class ListIncomes(Command):
@@ -88,9 +146,8 @@ class ListIncomes(Command):
         super().__init__(["incomes", "inc", "i"], "list all new incomes")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.INCOME, ctx):
-            print("Incomes:")
-            red("No new incomes to display")
+        table = get_table(ctx.entry.INCOME, ctx)
+        console.print(table)
 
 
 class ListSources(Command):
@@ -98,9 +155,8 @@ class ListSources(Command):
         super().__init__(["sources", "src", "s"], "list all new sources")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.SOURCE, ctx):
-            print("Sources:")
-            red("No new sources to display")
+        table = get_table(ctx.entry.SOURCE, ctx)
+        console.print(table)
 
 
 class ListAccounts(Command):
@@ -108,9 +164,8 @@ class ListAccounts(Command):
         super().__init__(["accounts", "acc", "a"], "list all new accounts")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.ACCOUNT, ctx):
-            print("Accounts:")
-            red("No new accounts to display")
+        table = get_table(ctx.entry.ACCOUNT, ctx)
+        console.print(table)
 
 
 class ListPersons(Command):
@@ -118,9 +173,8 @@ class ListPersons(Command):
         super().__init__(["persons", "per", "p"], "list all new persons")
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.PERSON, ctx):
-            print("Persons:")
-            red("No new persons to display")
+        table = get_table(ctx.entry.PERSON, ctx)
+        console.print(table)
 
 
 class ListPersonTransactions(Command):
@@ -130,9 +184,8 @@ class ListPersonTransactions(Command):
         )
 
     def run(self, args, ctx):
-        if not print_thing(ctx.entry.PERSON_TRANSACTION, ctx):
-            print("Person Transactions:")
-            red("No new person transactions to display")
+        table = get_table(ctx.entry.PERSON_TRANSACTION, ctx)
+        console.print(table)
 
 
 ls = List()

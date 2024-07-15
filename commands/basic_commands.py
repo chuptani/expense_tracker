@@ -5,11 +5,11 @@ from utils import utils
 from utils.logger import BasicFormatter, cli_logger
 from database import actions
 
+from rich.console import Console
+
 
 logger = logging.getLogger(__name__)
-handler = logging.StreamHandler()
-handler.setFormatter(BasicFormatter())
-logger.addHandler(handler)
+console = Console()
 
 
 class Exit(Command):
@@ -43,7 +43,7 @@ class Commit(Command):
                 return
             print("Comitting session to database...")
             actions.commit_changes(ctx)
-            logger.info("All changes have been committed successfully.")
+            console.print("[green]All changes have been committed successfully.")
         except Exception as e:
             logger.error(e)
 

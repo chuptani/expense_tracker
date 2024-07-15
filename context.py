@@ -6,8 +6,8 @@ from enum import Enum, auto
 
 class Entry(Enum):
     EXPENSE = auto()
-    INCOME = auto()
     CATEGORY = auto()
+    INCOME = auto()
     SOURCE = auto()
     ACCOUNT = auto()
     PERSON = auto()

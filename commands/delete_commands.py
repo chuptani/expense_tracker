@@ -78,6 +78,7 @@ class Delete(Command):
     def run(self, args, ctx):
         if args:
             red(f"invalid subcommand '{args[0]}'")
+            return
         red("No subcommand provided")
 
 

@@ -69,6 +69,45 @@ def get_prefixes(s):
     return prefixes
 
 
+class Colorify:
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    MAGENTA = "\033[95m"
+    CYAN = "\033[96m"
+    WHITE = "\033[97m"
+    END = "\033[0m"
+
+    @staticmethod
+    def red(text):
+        return f"{Colorify.RED}{text}{Colorify.END}"
+
+    @staticmethod
+    def green(text):
+        return f"{Colorify.GREEN}{text}{Colorify.END}"
+
+    @staticmethod
+    def yellow(text):
+        return f"{Colorify.YELLOW}{text}{Colorify.END}"
+
+    @staticmethod
+    def blue(text):
+        return f"{Colorify.BLUE}{text}{Colorify.END}"
+
+    @staticmethod
+    def magenta(text):
+        return f"{Colorify.MAGENTA}{text}{Colorify.END}"
+
+    @staticmethod
+    def cyan(text):
+        return f"{Colorify.CYAN}{text}{Colorify.END}"
+
+    @staticmethod
+    def white(text):
+        return f"{Colorify.WHITE}{text}{Colorify.END}"
+
+
 if __name__ == "__main__":
     for alias in get_prefixes("hello"):
         print(alias)

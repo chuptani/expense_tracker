@@ -23,16 +23,17 @@ class RootFormatter(logging.Formatter):
     RESET = "\033[0m"
 
     def format(self, record):
-        log_fmt = f"{self.COLORS.get(record.levelno)}[%(name)s] - %(levelname)s:{self.RESET} %(message)s"
+        # log_fmt = f"{self.COLORS.get(record.levelno)}[%(name)s] - %(levelname)s:{self.RESET} %(message)s"
+        log_fmt = f"{self.COLORS.get(record.levelno)}[%(asctime)s] - [%(name)s] - %(levelname)s:{self.RESET} %(message)s"
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
 
-log_name = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-log_path = f"logs/{log_name}.log"
+# log_name = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+# log_path = f"logs/{log_name}.log"
 logging.basicConfig(level=logging.DEBUG, handlers=[])
 root_logger = logging.getLogger()
-file_handler = logging.FileHandler(log_path)
+file_handler = logging.FileHandler("logs/cli.log")
 file_handler.setFormatter(RootFormatter())
 root_logger.addHandler(file_handler)
 
@@ -74,6 +75,7 @@ class Cli:
         print(
             f"Today's date: \033[38;5;12m{self.ctx.current_date} | {self.ctx.current_week.weekday}\033[0m"
         )
+        root_logger.info("CLI started")
 
         while True:
             try:
