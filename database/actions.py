@@ -1,7 +1,8 @@
 import logging
 from decimal import Decimal
 
-from database.models import (
+from . import session
+from .models import (
     Expense,
     ExpenseCategory,
     Income,
@@ -9,7 +10,6 @@ from database.models import (
     Account,
     Person,
     PersonTransaction,
-    session,
 )
 
 logger = logging.getLogger(__name__)

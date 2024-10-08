@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}View{% endblock %}
+{% block content %}
+  <h1 class="text-center display-2 mt-5 mb-2">
+    View
+  </h1>
+  <form method="POST" action="/view" class="row g-3 py-5 justify-content-center" id="date-form">
+    {{ form.hidden_tag() }}
+    <div class="col-md-3">
+      {{ form.entry_type(class="form-select") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.start_date(class="form-control", id="start-date") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.end_date(class="form-control", id="end-date") }}
+    </div>
+    <div class="col-md-1">
+      {{ form.submit(class="btn btn-primary") }}
+    </div>
+
+    <div class="row g-3 justify-content-center">
+      <div class="col-md-3">
+        {{ form.months(class="form-select") }}
+      </div>
+      <div class="col-md-3">
+        {{ form.years(class="form-select") }}
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-dark" id="show_all_expenses_button"">All</button>
+      </div>
+    </div>
+  </form>
+  <div class="container rounded bg-dark p-3 border">
+    {% if entries %}
+        {% if form.entry_type.data == "expenses" %}
+          <h2 class="text-center text-light py-3">Expenses</h2>
+          {% include "expenses.html" %}
+        {% elif form.entry_type.data == "incomes" %}
+          <h2 class="text-center text-light">Incomes</h2>
+          {% include "incomes.html" %}
+        {% elif form.entry_type.data == "categories" %}
+          <h2 class="text-center text-light">Categories</h2>
+          {% include "categories.html" %}
+        {% endif %}
+      {% elif form.entry_type.data %}
+      <h2 class="text-center text-light">No entries found</h2>
+      {% else %}
+      <h2 class="text-center text-light">Select an option and a date range to view entries</h2>
+    {% endif %}
+  </div>
+  <div id="date-error" class="text-danger mt-2 d-none"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const errorDiv = document.getElementById('date-error');
+
+    startDateInput.addEventListener('change', function() {
+      endDateInput.min = startDateInput.value;
+      errorDiv.classList.add('d-none'); // Hide error message
+    });
+
+    document.getElementById('date-form').addEventListener('submit', function(event) {
+      const startDate = new Date(startDateInput.value);
+      const endDate = new Date(endDateInput.value);
+
+      if (endDate < startDate) {
+        errorDiv.textContent = 'End date cannot be before start date.';
+        errorDiv.classList.remove('d-none'); // Show error message
+        event.preventDefault(); // Prevent form submission
+      } else {
+        errorDiv.classList.add('d-none'); // Hide error message
+      }
+    });
+  });
+</script>
+{% endblock %}

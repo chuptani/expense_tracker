@@ -3,8 +3,8 @@ from decimal import Decimal
 from utils.logger import green, red
 from database import actions
 from utils.utils import is_number
+from database import session
 from database.models import (
-    session,
     ExpenseCategory,
     Account,
     IncomeSource,

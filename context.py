@@ -1,6 +1,5 @@
 import datetime
 import calendar
-from database import actions
 from enum import Enum, auto
 
 
@@ -97,7 +96,7 @@ class Year:
 
 
 class Ctx:
-    def __init__(self, session, registry=None):
+    def __init__(self, session=None, registry=None):
 
         self.entry = Entry
         self.session = session

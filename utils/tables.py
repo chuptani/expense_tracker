@@ -6,23 +6,24 @@ class ExpensesTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
         self.add_column("Date", justify="center")
         self.add_column("Amount", justify="right")
-        self.add_column("Account", justify="center")
+        self.add_column("Notes", justify="center")
         self.add_column("Category", justify="center")
-        self.add_column("Notes")
+        self.add_column("Account", justify="center")
 
     def add_entry(self, expense, color=""):
         self.add_row(
             f"[{color}]" + str(expense.id),
-            f"[{color}]" + str(expense.date) + f" ({expense.date.strftime("%a")})",
+            f"[{color}]" + str(expense.date.strftime("%b %d, %Y (%a)")),
             f"[{color}]" + str(expense.amount),
-            f"[{color}]" + expense.account.name,
-            f"[{color}]" + expense.category.name,
             f"[{color}]" + expense.notes,
+            f"[{color}]" + expense.category.name,
+            f"[{color}]" + expense.account.name,
         )
 
 
@@ -31,6 +32,7 @@ class CategoriesTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -48,6 +50,7 @@ class IncomesTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -60,7 +63,7 @@ class IncomesTable(Table):
     def add_entry(self, income, color=""):
         self.add_row(
             f"[{color}]" + str(income.id),
-            f"[{color}]" + str(income.date) + f" ({income.date.strftime("%a")})",
+            f"[{color}]" + str(income.date.strftime("%b %d, %Y (%a)")),
             f"[{color}]" + str(income.amount),
             f"[{color}]" + income.account.name,
             f"[{color}]" + income.source.name,
@@ -73,6 +76,7 @@ class SourcesTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -90,6 +94,7 @@ class AccountsTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -109,6 +114,7 @@ class PersonsTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -126,6 +132,7 @@ class PersonTransactionsTable(Table):
         super().__init__(
             box=box.MINIMAL,
             show_edge=False,
+            caption_justify="left",
             # expand=True,
         )
         self.add_column("ID", justify="right")
@@ -137,9 +144,7 @@ class PersonTransactionsTable(Table):
     def add_entry(self, person_transaction, color=""):
         self.add_row(
             f"[{color}]" + str(person_transaction.id),
-            f"[{color}]"
-            + str(person_transaction.date)
-            + f" ({person_transaction.date.strftime("%a")})",
+            f"[{color}]" + str(person_transaction.date.strftime("%b %d, %Y (%a)")),
             f"[{color}]" + str(person_transaction.amount),
             f"[{color}]" + person_transaction.person.name,
             f"[{color}]" + person_transaction.notes,

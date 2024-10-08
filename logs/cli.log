@@ -174,3 +174,39 @@
 [0;32m[2024-07-15 16:09:25,690] - [database.actions] - INFO:[0m <Account(id=2, name='card', balance=20585.75)>
 [0;32m[2024-07-15 16:09:25,690] - [database.actions] - INFO:[0m <Account(id=1, name='cash', balance=-2005.00)>
 [0;32m[2024-07-15 16:09:25,690] - [commands.basic_commands] - INFO:[0m All changes have been committed successfully.
+[0;32m[2024-07-16 00:40:29,461] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:42:22,584] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:43:04,512] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:43:26,968] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:44:01,474] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:44:12,376] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:45:57,122] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:46:22,677] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:46:54,409] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:48:54,437] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:49:15,162] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 00:52:46,607] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:19:41,719] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:22:30,377] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:22:58,512] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:44:35,626] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:47:57,480] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:49:07,805] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:50:40,022] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:51:22,273] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:51:44,304] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:51:54,322] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:52:16,992] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:57:41,867] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 01:59:54,655] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 02:03:26,186] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 16:21:47,084] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-16 17:53:33,583] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-17 15:35:03,738] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-17 15:41:27,402] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-17 15:42:26,050] - [root] - INFO:[0m CLI started
+[0;32m[2024-07-19 23:28:44,977] - [root] - INFO:[0m CLI started
+[0;32m[2024-08-05 21:11:58,910] - [root] - INFO:[0m CLI started
+[0;32m[2024-08-07 19:06:16,933] - [root] - INFO:[0m CLI started
+[0;32m[2024-08-09 11:47:32,835] - [root] - INFO:[0m CLI started
+[0;32m[2024-08-27 18:46:06,703] - [root] - INFO:[0m CLI started

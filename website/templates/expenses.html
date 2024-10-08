@@ -1,0 +1,24 @@
+<table class="table fs-5">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Date</th>
+      <th scope="col" class="text-end">Amount</th>
+      <th scope="col" class="text-center">Notes</th>
+      <th scope="col" class="text-center">Category</th>
+      <th scope="col" class="text-center">Account</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for entry in entries %}
+    <tr>
+      <th scope="row">{{ entry.id }}</th>
+      <td>{{ entry.date.strftime("%b %d, %Y (%a)") }}</td>
+      <td class="text-end">{{ entry.amount }}</td>
+      <td class="text-center">{{ entry.notes }}</td>
+      <td class="text-center">{{ entry.category.name }}</td>
+      <td class="text-center">{{ entry.account.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

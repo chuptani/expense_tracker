@@ -4,19 +4,13 @@ from decimal import Decimal
 
 from sqlalchemy import Numeric, Enum
 
-from sqlalchemy import create_engine, String, ForeignKey, select, func
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import (
     relationship,
-    sessionmaker,
     Mapped,
     mapped_column,
     DeclarativeBase,
 )
-
-DATABASE_URL = "sqlite+pysqlite:///database/expense_tracker.db"
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine, expire_on_commit=False)
-session = Session()
 
 
 class Base(DeclarativeBase):

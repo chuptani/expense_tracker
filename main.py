@@ -8,7 +8,7 @@ from context import Ctx
 import commands
 from utils import validation
 from utils.logger import red
-from database.models import session
+from database import session
 from sqlalchemy.exc import SQLAlchemyError
 
 

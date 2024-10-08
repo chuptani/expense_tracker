@@ -1,0 +1,16 @@
+<table class="table fs-5">
+  <thead>
+    <tr>
+      <th scope="col" class="text-end">ID</th>
+      <th scope="col" class="text-center">Categories</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for entry in entries %}
+    <tr>
+      <th scope="row">{{ entry.id }}</th>
+      <td class="text-center">{{ entry.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

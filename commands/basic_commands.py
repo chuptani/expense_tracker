@@ -1,8 +1,7 @@
 import logging
 import sys, subprocess
 from commands import Command, CommandRegistry
-from utils import utils
-from utils.logger import BasicFormatter, cli_logger
+from utils.logger import cli_logger
 from database import actions
 
 from rich.console import Console

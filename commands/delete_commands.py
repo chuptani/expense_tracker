@@ -2,7 +2,7 @@ import logging
 from commands import Command, CommandRegistry
 from utils import utils
 from utils.logger import green, red
-from database import actions
+import database as db
 
 
 logger = logging.getLogger(__name__)
@@ -28,19 +28,19 @@ def delete_things(entry_type, args, ctx):
                 continue
             entry = None
             if entry_type == ctx.entry.EXPENSE:
-                entry = actions.get_expense(thing_id)
+                entry = db.actions.get_expense(thing_id)
             elif entry_type == ctx.entry.INCOME:
-                entry = actions.get_income(thing_id)
+                entry = db.actions.get_income(thing_id)
             elif entry_type == ctx.entry.CATEGORY:
-                entry = actions.get_category(thing_id)
+                entry = db.actions.get_category(thing_id)
             elif entry_type == ctx.entry.SOURCE:
-                entry = actions.get_source(thing_id)
+                entry = db.actions.get_source(thing_id)
             elif entry_type == ctx.entry.ACCOUNT:
-                entry = actions.get_account(thing_id)
+                entry = db.actions.get_account(thing_id)
             elif entry_type == ctx.entry.PERSON:
-                entry = actions.get_person(thing_id)
+                entry = db.actions.get_person(thing_id)
             elif entry_type == ctx.entry.PERSON_TRANSACTION:
-                entry = actions.get_person_transaction(thing_id)
+                entry = db.actions.get_person_transaction(thing_id)
             if not entry:
                 red(f"{thing} '{thing_id}' not found")
                 continue
@@ -55,19 +55,19 @@ def delete_things(entry_type, args, ctx):
         return
     for thing_id in valid_thing_ids:
         if entry_type == ctx.entry.EXPENSE:
-            actions.delete_expense(thing_id, ctx)
+            db.actions.delete_expense(thing_id, ctx)
         elif entry_type == ctx.entry.INCOME:
-            actions.delete_income(thing_id, ctx)
+            db.actions.delete_income(thing_id, ctx)
         elif entry_type == ctx.entry.CATEGORY:
-            actions.delete_category(thing_id, ctx)
+            db.actions.delete_category(thing_id, ctx)
         elif entry_type == ctx.entry.SOURCE:
-            actions.delete_source(thing_id, ctx)
+            db.actions.delete_source(thing_id, ctx)
         elif entry_type == ctx.entry.ACCOUNT:
-            actions.delete_account(thing_id, ctx)
+            db.actions.delete_account(thing_id, ctx)
         elif entry_type == ctx.entry.PERSON:
-            actions.delete_person(thing_id, ctx)
+            db.actions.delete_person(thing_id, ctx)
         elif entry_type == ctx.entry.PERSON_TRANSACTION:
-            actions.delete_person_transaction(thing_id, ctx)
+            db.actions.delete_person_transaction(thing_id, ctx)
         green(f"{thing} '{thing_id}' deleted")
 
 
@@ -94,7 +94,7 @@ class DeleteExpense(Command):
                 if not utils.is_number(expense_id):
                     red(f"invalid expense id '{expense_id}'")
                     continue
-                expense = actions.get_expense(expense_id)
+                expense = db.actions.get_expense(expense_id)
                 if not expense:
                     red(f"expense {expense_id} not found")
                     continue
@@ -108,7 +108,7 @@ class DeleteExpense(Command):
         if input("\033[0;33mDelete these expenses? [Y/n] \033[0m") in ["n", "N"]:
             return
         for expense_id in valid_expense_ids:
-            actions.delete_expense(expense_id, ctx)
+            db.actions.delete_expense(expense_id, ctx)
             green(f"expense {expense_id} deleted")
 
 
@@ -124,7 +124,7 @@ class DeleteIncome(Command):
                 if not utils.is_number(income_id):
                     red(f"invalid income id '{income_id}'")
                     continue
-                income = actions.get_income(income_id)
+                income = db.actions.get_income(income_id)
                 if not income:
                     red(f"income {income_id} not found")
                     continue
@@ -138,7 +138,7 @@ class DeleteIncome(Command):
         if input("\033[0;33mDelete these incomes? [Y/n] \033[0m") in ["n", "N"]:
             return
         for income_id in valid_income_ids:
-            actions.delete_income(income_id, ctx)
+            db.actions.delete_income(income_id, ctx)
             green(f"income {income_id} deleted")
 
 
@@ -154,7 +154,7 @@ class DeleteCategory(Command):
                 if not utils.is_number(category_id):
                     red(f"invalid category id '{category_id}'")
                     continue
-                category = actions.get_category(category_id)
+                category = db.actions.get_category(category_id)
                 if not category:
                     red(f"category {category_id} not found")
                     continue
@@ -168,7 +168,7 @@ class DeleteCategory(Command):
         if input("\033[0;33mDelete these categories? [Y/n] \033[0m") in ["n", "N"]:
             return
         for category_id in valid_category_ids:
-            actions.delete_category(category_id, ctx)
+            db.actions.delete_category(category_id, ctx)
             green(f"category {category_id} deleted")
 
 
@@ -184,7 +184,7 @@ class DeleteSource(Command):
                 if not utils.is_number(source_id):
                     red(f"invalid source id '{source_id}'")
                     continue
-                source = actions.get_source(source_id)
+                source = db.actions.get_source(source_id)
                 if not source:
                     red(f"source {source_id} not found")
                     continue
@@ -198,7 +198,7 @@ class DeleteSource(Command):
         if input("\033[0;33mDelete these sources? [Y/n] \033[0m") in ["n", "N"]:
             return
         for source_id in valid_source_ids:
-            actions.delete_source(source_id, ctx)
+            db.actions.delete_source(source_id, ctx)
             green(f"source {source_id} deleted")
 
 
@@ -214,7 +214,7 @@ class DeletePerson(Command):
                 if not utils.is_number(person_id):
                     red(f"invalid person id '{person_id}'")
                     continue
-                person = actions.get_person(person_id)
+                person = db.actions.get_person(person_id)
                 if not person:
                     red(f"person {person_id} not found")
                     continue
@@ -228,7 +228,7 @@ class DeletePerson(Command):
         if input("\033[0;33mDelete these persons? [Y/n] \033[0m") in ["n", "N"]:
             return
         for person_id in valid_person_ids:
-            actions.delete_person(person_id, ctx)
+            db.actions.delete_person(person_id, ctx)
             green(f"person {person_id} deleted")
 
 
@@ -246,7 +246,7 @@ class DeletePersonTransaction(Command):
                 if not utils.is_number(person_transaction_id):
                     red(f"invalid person transaction id '{person_transaction_id}'")
                     continue
-                person_transaction = actions.get_person_transaction(
+                person_transaction = db.actions.get_person_transaction(
                     person_transaction_id
                 )
                 if not person_transaction:
@@ -265,7 +265,7 @@ class DeletePersonTransaction(Command):
         ]:
             return
         for person_transaction_id in valid_person_transaction_ids:
-            actions.delete_person_transaction(person_transaction_id, ctx)
+            db.actions.delete_person_transaction(person_transaction_id, ctx)
             green(f"person transaction {person_transaction_id} deleted")
 
 
@@ -281,7 +281,7 @@ class DeleteAccount(Command):
                 if not utils.is_number(account_id):
                     red(f"invalid account id '{account_id}'")
                     continue
-                account = actions.get_account(account_id)
+                account = db.actions.get_account(account_id)
                 if not account:
                     red(f"account {account_id} not found")
                     continue
@@ -295,7 +295,7 @@ class DeleteAccount(Command):
         if input("\033[0;33mDelete these accounts? [Y/n] \033[0m") in ["n", "N"]:
             return
         for account_id in valid_account_ids:
-            actions.delete_account(account_id, ctx)
+            db.actions.delete_account(account_id, ctx)
             green(f"account {account_id} deleted")
 
 
