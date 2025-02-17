@@ -1,6 +1,6 @@
 import logging
 from decimal import Decimal
-from commands import Command, CommandRegistry
+from .commands import Command, CommandRegistry
 from utils import utils, validation
 from utils.logger import green, red
 from database import actions

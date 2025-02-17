@@ -1,6 +1,6 @@
 import logging
 import sys, subprocess
-from commands import Command, CommandRegistry
+from .commands import Command, CommandRegistry
 from utils.logger import cli_logger
 from database import actions
 

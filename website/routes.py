@@ -1,5 +1,5 @@
 import database as db
-from context import Ctx
+from cli.context import Ctx
 from flask import render_template
 
 from . import app
@@ -47,4 +47,3 @@ def test_page():
 
 if __name__ == "__main__":
     app.run(debug=True)
-

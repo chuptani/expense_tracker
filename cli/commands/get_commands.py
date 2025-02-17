@@ -1,7 +1,7 @@
 import logging
 import database as db
-from context import Entry
-from commands import Command, CommandRegistry
+from cli.context import Entry
+from .commands import Command, CommandRegistry
 from utils import utils
 from utils.tables import ExpensesTable, IncomesTable, PersonTransactionsTable
 

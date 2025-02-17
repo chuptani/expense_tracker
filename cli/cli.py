@@ -4,8 +4,8 @@ import logging
 import readline
 import datetime
 
-from context import Ctx
-import commands
+from .context import Ctx
+from . import commands
 from utils import validation
 from utils.logger import red
 from database import session

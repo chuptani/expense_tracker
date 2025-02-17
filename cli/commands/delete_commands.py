@@ -1,5 +1,5 @@
 import logging
-from commands import Command, CommandRegistry
+from .commands import Command, CommandRegistry
 from utils import utils
 from utils.logger import green, red
 import database as db

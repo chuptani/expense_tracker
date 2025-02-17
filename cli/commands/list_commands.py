@@ -1,6 +1,6 @@
 import logging
 
-from commands import Command, CommandRegistry
+from .commands import Command, CommandRegistry
 from utils.tables import (
     ExpensesTable,
     CategoriesTable,

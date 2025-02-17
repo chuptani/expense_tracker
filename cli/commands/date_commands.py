@@ -1,5 +1,5 @@
 import logging
-from commands import Command, CommandRegistry
+from .commands import Command, CommandRegistry
 import datetime
 from utils import utils
 from utils.logger import BasicFormatter, green, red
